@@ -1,0 +1,32 @@
+[
+  {
+    "company": "TCS",
+    "rounds_count": 3,
+    "rounds_details": "Round 1: Online Assessment (Aptitude + Logical Reasoning + DSA coding, HackerRank, 90 min). Round 2: Technical Interview (System Design LLD/HLD, projects, data structures). Round 3: Managerial/HR (Behavioural questions, scenarios, Why TCS?).",
+    "preparation_tips": "Prepare core DSA (arrays, strings, hash maps), basic database queries, and be ready to explain your projects in depth."
+  },
+  {
+    "company": "Infosys",
+    "rounds_count": 3,
+    "rounds_details": "Round 1: Online Test (Pseudo-code, math, verbal, puzzle, DSA). Round 2: Technical Interview (Java, OOPs, DBMS). Round 3: HR Round (general discussion, bond compliance).",
+    "preparation_tips": "Focus heavily on Java, Object Oriented Design principles, database schema design, and basic algorithms."
+  },
+  {
+    "company": "Amazon",
+    "rounds_count": 4,
+    "rounds_details": "Round 1: OA (Coding questions + work style assessment). Round 2: Technical 1 (DSA + LLD). Round 3: Technical 2 (Advanced DSA + HLD). Round 4: Bar Raiser (Leadership principles + system design).",
+    "preparation_tips": "Master trees, graphs, dynamic programming, Low-Level Design (LLD) principles, and Amazon's 16 Leadership Principles."
+  },
+  {
+    "company": "Google",
+    "rounds_count": 5,
+    "rounds_details": "Round 1: OA (DSA coding). Round 2: Technical 1 (Algorithms, Python). Round 3: Technical 2 (Algorithms, Python). Round 4: Technical 3 (Advanced Graph/Dynamic Programming). Round 5: Googliness & Leadership (behavioral).",
+    "preparation_tips": "Solve highly complex graph, tree, and dynamic programming questions in Python or C++. Emphasize clean code, time complexity, and edge case checking."
+  },
+  {
+    "company": "Microsoft",
+    "rounds_count": 4,
+    "rounds_details": "Round 1: OA (2 coding questions). Round 2: Technical 1 (Trees & Graphs). Round 3: Technical 2 (System design & OS concurrency). Round 4: Technical 3 / Managerial (Design patterns, culture fit).",
+    "preparation_tips": "Focus on Trees, Graphs, OS concepts (multithreading, deadlocks, virtual memory), and DBMS (indexing, B-trees, normalization)."
+  }
+]

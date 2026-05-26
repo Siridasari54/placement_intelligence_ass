@@ -1,0 +1,7 @@
+# Cache Settings
+cache:
+  enabled: true
+  type: "semantic" # Options: semantic, simple
+  similarity_threshold: 0.88
+  db_path: "data/cache/semantic_cache.db"
+  ttl: 86400  # 1 day in seconds

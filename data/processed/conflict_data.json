@@ -1,0 +1,32 @@
+[
+  {
+    "company": "Amazon",
+    "cgpa_portal": 7.0,
+    "package_portal": 35.0,
+    "conflict_type": "Eligibility and package mismatch"
+  },
+  {
+    "company": "TCS",
+    "cgpa_portal": 8.0,
+    "package_portal": 6.0,
+    "conflict_type": "Package mismatch"
+  },
+  {
+    "company": "Google",
+    "cgpa_portal": 8.0,
+    "package_portal": 45.0,
+    "conflict_type": "Package mismatch"
+  },
+  {
+    "company": "Infosys",
+    "cgpa_portal": 8.5,
+    "package_portal": 40.0,
+    "conflict_type": "Eligibility cutoff mismatch"
+  },
+  {
+    "company": "Microsoft",
+    "cgpa_portal": 7.0,
+    "package_portal": 40.0,
+    "conflict_type": "Cutoff and package mismatch"
+  }
+]

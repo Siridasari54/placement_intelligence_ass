@@ -1,0 +1,182 @@
+[
+  {
+    "company": "TCS",
+    "min_cgpa": 7.5,
+    "max_backlogs": 0,
+    "package_lpa": 4.1,
+    "bond_years": 0.0,
+    "tech_focus": "DSA, System Design",
+    "key_topics": "Data Structures, Algorithms, Software Engineering, System Design"
+  },
+  {
+    "company": "Infosys",
+    "min_cgpa": 8.0,
+    "max_backlogs": 0,
+    "package_lpa": 42.9,
+    "bond_years": 0.0,
+    "tech_focus": "DSA, OOPs, Java",
+    "key_topics": "Object Oriented Programming, Java, Data Structures, Dynamic Programming"
+  },
+  {
+    "company": "Deloitte",
+    "min_cgpa": 6.5,
+    "max_backlogs": 1,
+    "package_lpa": 12.0,
+    "bond_years": 1.0,
+    "tech_focus": "Python, SQL",
+    "key_topics": "SQL Queries, Python Scripting, Database Normalization, Relational Algebra"
+  },
+  {
+    "company": "Accenture",
+    "min_cgpa": 8.2,
+    "max_backlogs": 0,
+    "package_lpa": 17.3,
+    "bond_years": 1.0,
+    "tech_focus": "Java, Cloud",
+    "key_topics": "Java Spring Boot, Microservices, REST APIs, Cloud Computing Basics"
+  },
+  {
+    "company": "Amazon",
+    "min_cgpa": 6.4,
+    "max_backlogs": 1,
+    "package_lpa": 28.6,
+    "bond_years": 2.0,
+    "tech_focus": "C++, LLD",
+    "key_topics": "C++ Programming, Low Level Design, Design Patterns, Trees and Graphs"
+  },
+  {
+    "company": "Flipkart",
+    "min_cgpa": 7.0,
+    "max_backlogs": 2,
+    "package_lpa": 32.0,
+    "bond_years": 1.0,
+    "tech_focus": "Python, DSA",
+    "key_topics": "Python Libraries, Data Structures, Greedy Algorithms, Dynamic Programming"
+  },
+  {
+    "company": "Google",
+    "min_cgpa": 7.4,
+    "max_backlogs": 0,
+    "package_lpa": 42.0,
+    "bond_years": 1.0,
+    "tech_focus": "Python, Algorithms",
+    "key_topics": "Python Coding, Complex Algorithms, Graph Theory, NP-Complete problems"
+  },
+  {
+    "company": "Microsoft",
+    "min_cgpa": 6.1,
+    "max_backlogs": 1,
+    "package_lpa": 38.0,
+    "bond_years": 0.0,
+    "tech_focus": "C++, Algorithms",
+    "key_topics": "Trees, Graphs, Operating Systems (threading, deadlocks), DBMS (indexing, normalization)"
+  },
+  {
+    "company": "Wipro",
+    "min_cgpa": 7.0,
+    "max_backlogs": 1,
+    "package_lpa": 26.1,
+    "bond_years": 0.0,
+    "tech_focus": "Java, Testing",
+    "key_topics": "Java Syntax, Software Testing Methodologies, Manual & Automation Testing"
+  },
+  {
+    "company": "Cognizant",
+    "min_cgpa": 8.4,
+    "max_backlogs": 0,
+    "package_lpa": 42.3,
+    "bond_years": 1.0,
+    "tech_focus": "Python, React",
+    "key_topics": "Python Scripting, Frontend React Framework, JavaScript, HTML, CSS"
+  },
+  {
+    "company": "Capgemini",
+    "min_cgpa": 8.0,
+    "max_backlogs": 0,
+    "package_lpa": 38.3,
+    "bond_years": 1.0,
+    "tech_focus": "Cloud, Devops",
+    "key_topics": "AWS Services, Docker Containers, CI/CD pipelines, Networking Basics"
+  },
+  {
+    "company": "IBM",
+    "min_cgpa": 7.2,
+    "max_backlogs": 2,
+    "package_lpa": 18.5,
+    "bond_years": 0.0,
+    "tech_focus": "Java, Cloud",
+    "key_topics": "Java OOPs, Cloud Architecture, Linux commands, Shell scripting"
+  },
+  {
+    "company": "Adobe",
+    "min_cgpa": 7.8,
+    "max_backlogs": 0,
+    "package_lpa": 40.5,
+    "bond_years": 1.0,
+    "tech_focus": "C++, Algorithms",
+    "key_topics": "Advanced C++, Memory Management, Compiler Optimization, Vector calculations"
+  },
+  {
+    "company": "Oracle",
+    "min_cgpa": 7.5,
+    "max_backlogs": 0,
+    "package_lpa": 36.5,
+    "bond_years": 2.0,
+    "tech_focus": "SQL, Java",
+    "key_topics": "SQL joins, SQL subqueries, Java collections framework, Multithreading"
+  },
+  {
+    "company": "SAP",
+    "min_cgpa": 8.4,
+    "max_backlogs": 0,
+    "package_lpa": 20.7,
+    "bond_years": 1.0,
+    "tech_focus": "Java, HANA",
+    "key_topics": "ABAP, SAP architecture, In-memory databases, Java enterprise beans"
+  },
+  {
+    "company": "HCL",
+    "min_cgpa": 8.4,
+    "max_backlogs": 0,
+    "package_lpa": 28.1,
+    "bond_years": 1.0,
+    "tech_focus": "C++, Embedded",
+    "key_topics": "Microcontrollers, C++ structures, Real time OS (RTOS), Hardware interrupts"
+  },
+  {
+    "company": "Tech Mahindra",
+    "min_cgpa": 8.1,
+    "max_backlogs": 2,
+    "package_lpa": 16.5,
+    "bond_years": 1.5,
+    "tech_focus": "Python, Network",
+    "key_topics": "Socket programming, TCP/IP protocols, Python network automation, routing tables"
+  },
+  {
+    "company": "Qualcomm",
+    "min_cgpa": 7.0,
+    "max_backlogs": 2,
+    "package_lpa": 32.5,
+    "bond_years": 1.0,
+    "tech_focus": "C, Embedded",
+    "key_topics": "Pointers in C, Bitwise operations, Embedded firmware, Kernel modules"
+  },
+  {
+    "company": "Intel",
+    "min_cgpa": 7.5,
+    "max_backlogs": 0,
+    "package_lpa": 41.4,
+    "bond_years": 0.0,
+    "tech_focus": "Python, VHDL",
+    "key_topics": "Digital logic, VHDL, Python script testing, Processor architecture"
+  },
+  {
+    "company": "Samsung R&D",
+    "min_cgpa": 7.5,
+    "max_backlogs": 2,
+    "package_lpa": 22.0,
+    "bond_years": 1.0,
+    "tech_focus": "C++, Embedded",
+    "key_topics": "Android internals, C++ design patterns, Image processing algorithms"
+  }
+]

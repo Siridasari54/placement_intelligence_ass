@@ -1,0 +1,162 @@
+[
+  {
+    "company": "TCS",
+    "sde": 88,
+    "analyst": 42,
+    "officer": 70,
+    "intern": 44,
+    "total": 244
+  },
+  {
+    "company": "Infosys",
+    "sde": 30,
+    "analyst": 68,
+    "officer": 62,
+    "intern": 22,
+    "total": 182
+  },
+  {
+    "company": "Deloitte",
+    "sde": 42,
+    "analyst": 85,
+    "officer": 62,
+    "intern": 44,
+    "total": 233
+  },
+  {
+    "company": "Accenture",
+    "sde": 25,
+    "analyst": 22,
+    "officer": 52,
+    "intern": 68,
+    "total": 167
+  },
+  {
+    "company": "Amazon",
+    "sde": 42,
+    "analyst": 36,
+    "officer": 40,
+    "intern": 82,
+    "total": 200
+  },
+  {
+    "company": "Flipkart",
+    "sde": 58,
+    "analyst": 55,
+    "officer": 50,
+    "intern": 32,
+    "total": 195
+  },
+  {
+    "company": "Google",
+    "sde": 30,
+    "analyst": 92,
+    "officer": 46,
+    "intern": 30,
+    "total": 198
+  },
+  {
+    "company": "Microsoft",
+    "sde": 58,
+    "analyst": 58,
+    "officer": 36,
+    "intern": 68,
+    "total": 220
+  },
+  {
+    "company": "Wipro",
+    "sde": 42,
+    "analyst": 92,
+    "officer": 40,
+    "intern": 82,
+    "total": 256
+  },
+  {
+    "company": "Cognizant",
+    "sde": 48,
+    "analyst": 28,
+    "officer": 82,
+    "intern": 34,
+    "total": 192
+  },
+  {
+    "company": "Capgemini",
+    "sde": 68,
+    "analyst": 38,
+    "officer": 50,
+    "intern": 58,
+    "total": 214
+  },
+  {
+    "company": "IBM",
+    "sde": 58,
+    "analyst": 38,
+    "officer": 78,
+    "intern": 68,
+    "total": 242
+  },
+  {
+    "company": "Adobe",
+    "sde": 42,
+    "analyst": 80,
+    "officer": 62,
+    "intern": 48,
+    "total": 232
+  },
+  {
+    "company": "Oracle",
+    "sde": 35,
+    "analyst": 92,
+    "officer": 62,
+    "intern": 95,
+    "total": 284
+  },
+  {
+    "company": "SAP",
+    "sde": 48,
+    "analyst": 42,
+    "officer": 28,
+    "intern": 38,
+    "total": 156
+  },
+  {
+    "company": "HCL",
+    "sde": 48,
+    "analyst": 42,
+    "officer": 38,
+    "intern": 32,
+    "total": 160
+  },
+  {
+    "company": "Tech Mahindra",
+    "sde": 58,
+    "analyst": 28,
+    "officer": 58,
+    "intern": 30,
+    "total": 174
+  },
+  {
+    "company": "Qualcomm",
+    "sde": 25,
+    "analyst": 38,
+    "officer": 82,
+    "intern": 78,
+    "total": 223
+  },
+  {
+    "company": "Intel",
+    "sde": 48,
+    "analyst": 48,
+    "officer": 42,
+    "intern": 48,
+    "total": 186
+  },
+  {
+    "company": "Samsung R&D",
+    "sde": 42,
+    "analyst": 80,
+    "officer": 42,
+    "intern": 38,
+    "total": 202
+  }
+]

@@ -1,0 +1,21 @@
+# Hybrid Retrieval Configuration
+hybrid:
+  weight_vector: 0.6
+  weight_keyword: 0.4
+  top_k: 10
+
+# BM25 Parameters
+bm25:
+  k1: 1.5
+  b: 0.75
+
+# Reranking Configuration
+reranker:
+  enabled: true
+  model: "cross-encoder/ms-marco-MiniLM-L-6-v2"
+  top_n: 5
+
+# Multi-hop & Filtering Configuration
+filtering:
+  allow_metadata_filtering: true
+  default_min_relevance_score: 0.65

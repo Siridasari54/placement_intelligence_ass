@@ -1,0 +1,4 @@
+Ensure all factual assertions are backed by a structured citation link.
+Example:
+Google offers 42.0 LPA package [[1] Google Eligibility](file:///c:/Users/sirid/OneDrive/Desktop/placement_rag_sys/data/processed/eligibility_data.json).
+Do not create imaginary citations.
