@@ -1,32 +1,56 @@
-langchain==0.3.25
-langchain-community==0.3.24
-langchain-core==0.3.60
+# ── Core framework ────────────────────────────────────────────────────────────
+streamlit>=1.32.0
 
-langgraph==0.4.5
+# ── LangChain stack ───────────────────────────────────────────────────────────
+langchain>=0.2.0
+langchain-community>=0.2.0
+langchain-groq>=0.1.6
+langchain-huggingface>=0.0.3
+langchain-text-splitters>=0.2.0
 
-langchain-huggingface==0.1.2
-sentence-transformers==4.1.0
-transformers==4.51.3
-torch==2.7.0
+# ── Embeddings & vector search ────────────────────────────────────────────────
+sentence-transformers>=3.0.0
+faiss-cpu>=1.7.4
 
-langchain-chroma==0.2.4
-chromadb==1.0.9
+# ── Vector database ───────────────────────────────────────────────────────────
+# FIX #7: chromadb was missing; used by core/repositories.py
+chromadb>=0.4.0
 
-rank-bm25==0.2.2
+# ── PDF/DOCX extraction ───────────────────────────────────────────────────────
+pypdf>=4.0.0
+pdfplumber>=0.11.0
+docx2txt>=0.8
+docling>=2.0.0
+camelot-py[cv]>=0.11.0
+pymupdf>=1.23.0
 
-langchain-groq==0.3.2
-groq==0.24.0
-streamlit==1.45.1
+# ── OCR & Image processing ─────────────────────────────────────────────────────
+pytesseract>=0.3.10
+Pillow>=10.0.0
 
-pypdf==5.5.0
-pdfplumber==0.11.6
+# ── Visualization ─────────────────────────────────────────────────────────────
+plotly>=5.18.0
 
-docling==2.34.0
-unstructured==0.17.2
+# ── Sparse retrieval ──────────────────────────────────────────────────────────
+rank-bm25>=0.2.2
+nltk>=3.8.1
 
-python-dotenv==1.1.0
+# ── LLM provider ─────────────────────────────────────────────────────────────
+groq>=0.9.0
 
-numpy==2.2.5
-pandas==2.2.3
+# ── Token counting ────────────────────────────────────────────────────────────
+tiktoken>=0.7.0
 
-scikit-learn==1.6.1
+# ── Utilities ────────────────────────────────────────────────────────────────
+python-dotenv>=1.0.0
+numpy>=1.26.0
+scikit-learn>=1.4.0
+pandas>=2.2.0
+tqdm>=4.66.0
+
+# FIX #7: python-json-logger was missing; used by utils/logger.py
+python-json-logger>=2.0.7
+
+# FIX #7: pydantic-settings was missing; required if using the pydantic
+# BaseSettings pattern anywhere in the project
+pydantic-settings>=2.0.0

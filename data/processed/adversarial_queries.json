@@ -1,0 +1,50 @@
+[
+  {
+    "id": "1",
+    "query": "What is the exact date TCS will visit SVECW campus next?",
+    "type": "Out-of-corpus",
+    "expected_response": "Fallback — no date information in corpus"
+  },
+  {
+    "id": "2",
+    "query": "How many students from SVECW got placed in Google last year?",
+    "type": "Out-of-corpus",
+    "expected_response": "Fallback — no institution-specific placement count"
+  },
+  {
+    "id": "3",
+    "query": "What is the current Infosys stock price?",
+    "type": "Real-time / Out-of-corpus",
+    "expected_response": "Fallback — no financial market data in corpus"
+  },
+  {
+    "id": "4",
+    "query": "Which company is better — Google or Microsoft?",
+    "type": "Opinion / Subjective",
+    "expected_response": "Clarify it depends on student's profile; present objective comparison"
+  },
+  {
+    "id": "5",
+    "query": "Does Amazon offer work-from-home?",
+    "type": "Out-of-corpus",
+    "expected_response": "Fallback — no work mode information in corpus"
+  },
+  {
+    "id": "6",
+    "query": "What programming language should I learn for TCS?",
+    "type": "Partial",
+    "expected_response": "System Design is tested; specific language not mentioned"
+  },
+  {
+    "id": "7",
+    "query": "Which company pays the most in the world?",
+    "type": "Out-of-scope",
+    "expected_response": "Fallback — corpus covers only listed companies"
+  },
+  {
+    "id": "8",
+    "query": "I have a CGPA of 5.0. Which company can I apply to?",
+    "type": "Edge case — below all thresholds",
+    "expected_response": "No company in this dataset has a CGPA cutoff ≤ 5.0"
+  }
+]

@@ -1,32 +1,42 @@
 [
   {
-    "company": "Amazon",
+    "company": "TCS",
+    "cgpa_official": 7.5,
     "cgpa_portal": 7.0,
-    "package_portal": 35.0,
-    "conflict_type": "Eligibility and package mismatch"
+    "package_official": 4.1,
+    "package_portal": 4.5,
+    "conflict_type": "Both"
   },
   {
-    "company": "TCS",
-    "cgpa_portal": 8.0,
-    "package_portal": 6.0,
-    "conflict_type": "Package mismatch"
+    "company": "Amazon",
+    "cgpa_official": 6.4,
+    "cgpa_portal": 7.5,
+    "package_official": 28.6,
+    "package_portal": 32.0,
+    "conflict_type": "Both"
   },
   {
     "company": "Google",
-    "cgpa_portal": 8.0,
-    "package_portal": 45.0,
-    "conflict_type": "Package mismatch"
+    "cgpa_official": 7.4,
+    "cgpa_portal": 7.0,
+    "package_official": 42.0,
+    "package_portal": 8.0,
+    "conflict_type": "CGPA only"
   },
   {
     "company": "Infosys",
-    "cgpa_portal": 8.5,
-    "package_portal": 40.0,
-    "conflict_type": "Eligibility cutoff mismatch"
+    "cgpa_official": 8.0,
+    "cgpa_portal": 8.0,
+    "package_official": 42.9,
+    "package_portal": 45.0,
+    "conflict_type": "Both"
   },
   {
     "company": "Microsoft",
-    "cgpa_portal": 7.0,
-    "package_portal": 40.0,
-    "conflict_type": "Cutoff and package mismatch"
+    "cgpa_official": 6.1,
+    "cgpa_portal": 7.5,
+    "package_official": 21.4,
+    "package_portal": 25.0,
+    "conflict_type": "Both"
   }
 ]

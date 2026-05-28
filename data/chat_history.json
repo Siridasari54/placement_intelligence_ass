@@ -1,0 +1,58 @@
+[
+  {
+    "id": "20260528_205936_646843",
+    "title": "what the cgps required for google",
+    "timestamp": "2026-05-28 20:59:36.647272",
+    "messages": [
+      {
+        "role": "user",
+        "content": "what the cgps required for google"
+      },
+      {
+        "role": "assistant",
+        "content": "Based on the provided context, the minimum CGPA required for Google is 7.4, as stated in [Source 2] and [Source 1].",
+        "confidence": 1.0,
+        "sources": [
+          {
+            "text": "Google Official Criteria - CGPA: 7.4, Package: 42.0 LPA",
+            "metadata": {
+              "company": "Google",
+              "section": "conflict",
+              "source": "placement_dataset.pdf",
+              "conflict": true,
+              "chunk_type": "conflict_record",
+              "rrf_score": 0.01639344262295082,
+              "rerank_score": 0.01639344262295082,
+              "confidence": 0.01639344262295082
+            }
+          },
+          {
+            "text": "Google Eligibility Criteria: | Min CGPA: 7.4 | Max\nBacklogs: 0 | Package (LPA): 42.0 | Bond\n(Yrs): 1 | Key Topics: DSA, Algorithms | Tech Focus: Python",
+            "metadata": {
+              "company": "Google",
+              "section": "eligibility",
+              "source": "placement_dataset.pdf",
+              "chunk_type": "table_row",
+              "rrf_score": 0.016129032258064516,
+              "rerank_score": 0.016129032258064516,
+              "confidence": 0.016129032258064516
+            }
+          },
+          {
+            "text": "Google Portal Criteria - CGPA: 7.5, Package: 45.0 LPA",
+            "metadata": {
+              "company": "Google",
+              "section": "conflict",
+              "source": "placement_dataset.pdf",
+              "conflict": true,
+              "chunk_type": "conflict_record",
+              "rrf_score": 0.015873015873015872,
+              "rerank_score": 0.015873015873015872,
+              "confidence": 0.015873015873015872
+            }
+          }
+        ]
+      }
+    ]
+  }
+]

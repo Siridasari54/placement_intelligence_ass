@@ -1,0 +1,212 @@
+[
+  {
+    "id": "E1",
+    "query": "What is the CGPA requirement for TCS?",
+    "difficulty": "Easy",
+    "rag_skill_tested": "Direct table lookup",
+    "expected_answer": "7.5"
+  },
+  {
+    "id": "E2",
+    "query": "How many backlogs does Deloitte allow?",
+    "difficulty": "Easy",
+    "rag_skill_tested": "Direct table lookup",
+    "expected_answer": "1"
+  },
+  {
+    "id": "E3",
+    "query": "What is the bond period for Amazon?",
+    "difficulty": "Easy",
+    "rag_skill_tested": "Direct table lookup",
+    "expected_answer": "2 years"
+  },
+  {
+    "id": "E4",
+    "query": "Which technology does Flipkart focus on in interviews?",
+    "difficulty": "Easy",
+    "rag_skill_tested": "Direct table lookup",
+    "expected_answer": "Python"
+  },
+  {
+    "id": "E5",
+    "query": "What is the package offered by Google?",
+    "difficulty": "Easy",
+    "rag_skill_tested": "Direct table lookup",
+    "expected_answer": "42.0 LPA"
+  },
+  {
+    "id": "E6",
+    "query": "Does Microsoft allow backlogs?",
+    "difficulty": "Easy",
+    "rag_skill_tested": "Boolean table query",
+    "expected_answer": "Yes, allows 1 backlog"
+  },
+  {
+    "id": "E7",
+    "query": "What rounds does TCS conduct?",
+    "difficulty": "Easy",
+    "rag_skill_tested": "Text retrieval",
+    "expected_answer": "3 rounds: Online Assessment, Technical Interview, Managerial/HR"
+  },
+  {
+    "id": "E8",
+    "query": "Which programming language is tested at Amazon?",
+    "difficulty": "Easy",
+    "rag_skill_tested": "Text retrieval",
+    "expected_answer": "C++"
+  },
+  {
+    "id": "M1",
+    "query": "List all companies that allow at least 2 backlogs.",
+    "difficulty": "Medium",
+    "rag_skill_tested": "Multi-row filter",
+    "expected_answer": "Flipkart, IBM, HCL, Tech Mahindra, Qualcomm, Samsung R&D"
+  },
+  {
+    "id": "M2",
+    "query": "Which companies require a CGPA above 8.0?",
+    "difficulty": "Medium",
+    "rag_skill_tested": "Threshold filter",
+    "expected_answer": "Infosys, Accenture, Cognizant, SAP, HCL, Tech Mahindra"
+  },
+  {
+    "id": "M3",
+    "query": "Which company has the highest package among IT service firms?",
+    "difficulty": "Medium",
+    "rag_skill_tested": "Category + sort",
+    "expected_answer": "Infosys (42.9 LPA)"
+  },
+  {
+    "id": "M4",
+    "query": "Which companies are bond-free?",
+    "difficulty": "Medium",
+    "rag_skill_tested": "Boolean filter",
+    "expected_answer": "TCS, Infosys, Microsoft, IBM, Intel"
+  },
+  {
+    "id": "M5",
+    "query": "Compare TCS and Infosys on all eligibility criteria.",
+    "difficulty": "Medium",
+    "rag_skill_tested": "Multi-attribute comparison",
+    "expected_answer": "TCS: CGPA 7.5, 0 backlogs, 4.1 LPA, 0 bond. Infosys: CGPA 8.0, 0 backlogs, 42.9 LPA, 0 bond."
+  },
+  {
+    "id": "M6",
+    "query": "How many SDE roles does Amazon hire versus Google?",
+    "difficulty": "Medium",
+    "rag_skill_tested": "Chart/table comparison",
+    "expected_answer": "Amazon: 42 SDEs, Google: 30 SDEs"
+  },
+  {
+    "id": "M7",
+    "query": "Which company hires the most Interns?",
+    "difficulty": "Medium",
+    "rag_skill_tested": "Hiring table aggregation",
+    "expected_answer": "Oracle (95 interns)"
+  },
+  {
+    "id": "M8",
+    "query": "What topics should I prepare for a Microsoft interview?",
+    "difficulty": "Medium",
+    "rag_skill_tested": "Text retrieval + synthesis",
+    "expected_answer": "DSA, OS, DBMS, C++, problem-solving approach"
+  },
+  {
+    "id": "M9",
+    "query": "Which company's package grew the most from 2021 to 2024?",
+    "difficulty": "Medium",
+    "rag_skill_tested": "Temporal reasoning",
+    "expected_answer": "Infosys (grew by 6.9 LPA)"
+  },
+  {
+    "id": "M10",
+    "query": "Which companies use Python as the technical focus?",
+    "difficulty": "Medium",
+    "rag_skill_tested": "Column filter",
+    "expected_answer": "Flipkart, Google, Oracle, Intel"
+  },
+  {
+    "id": "H1",
+    "query": "A student with CGPA 7.0, 1 backlog wants maximum pay with no bond.",
+    "difficulty": "Hard",
+    "rag_skill_tested": "3-condition filter",
+    "expected_answer": "Microsoft (21.4 LPA)"
+  },
+  {
+    "id": "H2",
+    "query": "Which Python-focused company hires the most Interns?",
+    "difficulty": "Hard",
+    "rag_skill_tested": "Join: tech + hiring",
+    "expected_answer": "Oracle (95 interns)"
+  },
+  {
+    "id": "H3",
+    "query": "For CGPA 8.0+, zero backlog students, rank companies by package.",
+    "difficulty": "Hard",
+    "rag_skill_tested": "Filter + sort",
+    "expected_answer": "Infosys (42.9), Cognizant (42.3), Tech Mahindra (35.9), SAP (20.7), Accenture (17.3)"
+  },
+  {
+    "id": "H4",
+    "query": "Which company had conflicting CGPA data across sources?",
+    "difficulty": "Hard",
+    "rag_skill_tested": "Conflict detection",
+    "expected_answer": "TCS, Amazon, Google, Microsoft"
+  },
+  {
+    "id": "H5",
+    "query": "Is the Amazon CGPA cutoff 6.4 or 7.0? Explain.",
+    "difficulty": "Hard",
+    "rag_skill_tested": "Conflict resolution",
+    "expected_answer": "There are conflicting records. Official criteria states 6.4, while placement portal lists 7.0. Please verify with official placement cell."
+  },
+  {
+    "id": "H6",
+    "query": "Which company offers the best package-to-CGPA ratio?",
+    "difficulty": "Hard",
+    "rag_skill_tested": "Computed aggregation",
+    "expected_answer": "Microsoft (21.4/6.1 = 3.51)"
+  },
+  {
+    "id": "H7",
+    "query": "Compare Google and Amazon on all dimensions: eligibility, package, hiring, trend.",
+    "difficulty": "Hard",
+    "rag_skill_tested": "Full synthesis",
+    "expected_answer": "Google: CGPA 7.4, 0 backlogs, 42.0 LPA, 1 bond, 30 SDEs/92 Analysts/30 Interns, marginal growth. Amazon: CGPA 6.4, 1 backlog, 28.6 LPA, 2 bond, 42 SDEs/36 Analysts/82 Interns, consistent rise."
+  },
+  {
+    "id": "X1",
+    "query": "What is TCS's campus visit date at SVECW?",
+    "difficulty": "Expert",
+    "rag_skill_tested": "Out-of-corpus fallback",
+    "expected_answer": "I don't have enough information in the provided documents"
+  },
+  {
+    "id": "X2",
+    "query": "Should I join Google or Microsoft? Which is better for my career?",
+    "difficulty": "Expert",
+    "rag_skill_tested": "Opinion / subjective",
+    "expected_answer": "It depends on your profile. Google offers 42.0 LPA with Python/Algorithms focus. Microsoft offers 21.4 LPA with C++/OS/DBMS focus and is bond-free."
+  },
+  {
+    "id": "X3",
+    "query": "I have CGPA 5.0. Where can I apply?",
+    "difficulty": "Expert",
+    "rag_skill_tested": "Below-threshold edge case",
+    "expected_answer": "No company in this dataset has a CGPA cutoff ≤ 5.0"
+  },
+  {
+    "id": "X4",
+    "query": "What is Infosys's current stock price?",
+    "difficulty": "Expert",
+    "rag_skill_tested": "Real-time out-of-corpus",
+    "expected_answer": "I don't have enough information in the provided documents"
+  },
+  {
+    "id": "X5",
+    "query": "Which company in this dataset pays the highest in the world?",
+    "difficulty": "Expert",
+    "rag_skill_tested": "Scope boundary handling",
+    "expected_answer": "The corpus covers only the listed companies. Among them, Infosys offers 42.9 LPA."
+  }
+]

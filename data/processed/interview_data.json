@@ -1,32 +1,56 @@
 [
   {
     "company": "TCS",
-    "rounds_count": 3,
-    "rounds_details": "Round 1: Online Assessment (Aptitude + Logical Reasoning + DSA coding, HackerRank, 90 min). Round 2: Technical Interview (System Design LLD/HLD, projects, data structures). Round 3: Managerial/HR (Behavioural questions, scenarios, Why TCS?).",
-    "preparation_tips": "Prepare core DSA (arrays, strings, hash maps), basic database queries, and be ready to explain your projects in depth."
-  },
-  {
-    "company": "Infosys",
-    "rounds_count": 3,
-    "rounds_details": "Round 1: Online Test (Pseudo-code, math, verbal, puzzle, DSA). Round 2: Technical Interview (Java, OOPs, DBMS). Round 3: HR Round (general discussion, bond compliance).",
-    "preparation_tips": "Focus heavily on Java, Object Oriented Design principles, database schema design, and basic algorithms."
+    "tech_focus": "System Design",
+    "rounds": [
+      "Round 1: Online Assessment: Aptitude + Logical Reasoning + DSA coding (HackerRank, 90 min)",
+      "Round 2: Technical Interview: System Design (LLD/HLD), previous projects, data structures",
+      "Round 3: Managerial/HR: Behavioural questions, teamwork scenarios, Why TCS?"
+    ],
+    "tips": "Strong DSA fundamentals, design patterns, OOPs principles. Know your projects end-to-end."
   },
   {
     "company": "Amazon",
-    "rounds_count": 4,
-    "rounds_details": "Round 1: OA (Coding questions + work style assessment). Round 2: Technical 1 (DSA + LLD). Round 3: Technical 2 (Advanced DSA + HLD). Round 4: Bar Raiser (Leadership principles + system design).",
-    "preparation_tips": "Master trees, graphs, dynamic programming, Low-Level Design (LLD) principles, and Amazon's 16 Leadership Principles."
+    "tech_focus": "C++ / LLD",
+    "rounds": [
+      "Round 1: Online Assessment: 2 DSA problems (medium-hard), 45 min",
+      "Round 2: Technical Interview 1: Array/DP/Graph problems + time-space complexity analysis",
+      "Round 3: Technical Interview 2: LLD (Low Level Design) — design a parking lot system",
+      "Round 4: Bar Raiser + HR: Leadership Principles (STAR format answers essential)"
+    ],
+    "tips": "Amazon's Leadership Principles are non-negotiable. Prepare STAR stories for all 16 principles. DSA difficulty is higher than service companies."
   },
   {
     "company": "Google",
-    "rounds_count": 5,
-    "rounds_details": "Round 1: OA (DSA coding). Round 2: Technical 1 (Algorithms, Python). Round 3: Technical 2 (Algorithms, Python). Round 4: Technical 3 (Advanced Graph/Dynamic Programming). Round 5: Googliness & Leadership (behavioral).",
-    "preparation_tips": "Solve highly complex graph, tree, and dynamic programming questions in Python or C++. Emphasize clean code, time complexity, and edge case checking."
+    "tech_focus": "Python / Algorithms",
+    "rounds": [
+      "Round 1: Online Assessment: 2 algorithmic problems (competitive programming level)",
+      "Round 2: Phone Screen: 1 coding problem + discussion on approach and complexity",
+      "Round 3: Onsite Round 1: Graphs + Dynamic Programming",
+      "Round 4: Onsite Round 2: System Design (scalable distributed system)",
+      "Round 5: Onsite Round 3: Behavioural (Googleyness)"
+    ],
+    "tips": "Google emphasises algorithmic thinking over implementation speed. Practice on LeetCode Hard. System Design must cover scalability at Google-scale."
+  },
+  {
+    "company": "Infosys",
+    "tech_focus": "Java / OOPs",
+    "rounds": [
+      "Round 1: Online Assessment: Aptitude + Logical + Verbal + Java MCQ",
+      "Round 2: Technical Interview: Core Java, OOPS principles, collections, multithreading",
+      "Round 3: HR Round: Career goals, relocation flexibility, Why Infosys?"
+    ],
+    "tips": "Focus on Java fundamentals, OOPs, and be clear about your career plan. The interview is relatively straightforward for a 42.9 LPA package."
   },
   {
     "company": "Microsoft",
-    "rounds_count": 4,
-    "rounds_details": "Round 1: OA (2 coding questions). Round 2: Technical 1 (Trees & Graphs). Round 3: Technical 2 (System design & OS concurrency). Round 4: Technical 3 / Managerial (Design patterns, culture fit).",
-    "preparation_tips": "Focus on Trees, Graphs, OS concepts (multithreading, deadlocks, virtual memory), and DBMS (indexing, B-trees, normalization)."
+    "tech_focus": "C++ / OS / DBMS",
+    "rounds": [
+      "Round 1: Online Assessment: 3 DSA problems (medium difficulty)",
+      "Round 2: Technical Interview 1: Data Structures (Trees, Graphs), problem-solving approach",
+      "Round 3: Technical Interview 2: OS concepts (threading, deadlocks), DBMS (indexing, normalization)",
+      "Round 4: HR Round: Culture fit, behavioural questions"
+    ],
+    "tips": "Microsoft values problem-solving approach over perfect solutions. Explain your thought process aloud. OS and DBMS knowledge is tested more than at other MNCs."
   }
 ]

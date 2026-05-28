@@ -4,179 +4,179 @@
     "min_cgpa": 7.5,
     "max_backlogs": 0,
     "package_lpa": 4.1,
-    "bond_years": 0.0,
-    "tech_focus": "DSA, System Design",
-    "key_topics": "Data Structures, Algorithms, Software Engineering, System Design"
+    "bond_years": 0,
+    "key_topics": "DSA, System Design",
+    "tech_focus": "System Design"
   },
   {
     "company": "Infosys",
     "min_cgpa": 8.0,
     "max_backlogs": 0,
     "package_lpa": 42.9,
-    "bond_years": 0.0,
-    "tech_focus": "DSA, OOPs, Java",
-    "key_topics": "Object Oriented Programming, Java, Data Structures, Dynamic Programming"
+    "bond_years": 0,
+    "key_topics": "DSA, OOPs",
+    "tech_focus": "Java"
   },
   {
     "company": "Deloitte",
-    "min_cgpa": 6.5,
+    "min_cgpa": 7.7,
     "max_backlogs": 1,
-    "package_lpa": 12.0,
-    "bond_years": 1.0,
-    "tech_focus": "Python, SQL",
-    "key_topics": "SQL Queries, Python Scripting, Database Normalization, Relational Algebra"
+    "package_lpa": 9.6,
+    "bond_years": 1,
+    "key_topics": "DSA, Aptitude",
+    "tech_focus": "System Design"
   },
   {
     "company": "Accenture",
     "min_cgpa": 8.2,
     "max_backlogs": 0,
     "package_lpa": 17.3,
-    "bond_years": 1.0,
-    "tech_focus": "Java, Cloud",
-    "key_topics": "Java Spring Boot, Microservices, REST APIs, Cloud Computing Basics"
+    "bond_years": 2,
+    "key_topics": "DSA, Cloud",
+    "tech_focus": "System Design"
   },
   {
     "company": "Amazon",
     "min_cgpa": 6.4,
     "max_backlogs": 1,
     "package_lpa": 28.6,
-    "bond_years": 2.0,
-    "tech_focus": "C++, LLD",
-    "key_topics": "C++ Programming, Low Level Design, Design Patterns, Trees and Graphs"
+    "bond_years": 2,
+    "key_topics": "DSA, C++, LLD",
+    "tech_focus": "C++"
   },
   {
     "company": "Flipkart",
-    "min_cgpa": 7.0,
+    "min_cgpa": 7.8,
     "max_backlogs": 2,
-    "package_lpa": 32.0,
-    "bond_years": 1.0,
-    "tech_focus": "Python, DSA",
-    "key_topics": "Python Libraries, Data Structures, Greedy Algorithms, Dynamic Programming"
+    "package_lpa": 25.3,
+    "bond_years": 2,
+    "key_topics": "DSA, Python",
+    "tech_focus": "Python"
   },
   {
     "company": "Google",
     "min_cgpa": 7.4,
     "max_backlogs": 0,
     "package_lpa": 42.0,
-    "bond_years": 1.0,
-    "tech_focus": "Python, Algorithms",
-    "key_topics": "Python Coding, Complex Algorithms, Graph Theory, NP-Complete problems"
+    "bond_years": 1,
+    "key_topics": "DSA, Algorithms",
+    "tech_focus": "Python"
   },
   {
     "company": "Microsoft",
     "min_cgpa": 6.1,
     "max_backlogs": 1,
-    "package_lpa": 38.0,
-    "bond_years": 0.0,
-    "tech_focus": "C++, Algorithms",
-    "key_topics": "Trees, Graphs, Operating Systems (threading, deadlocks), DBMS (indexing, normalization)"
+    "package_lpa": 21.4,
+    "bond_years": 0,
+    "key_topics": "DSA, OS, DBMS",
+    "tech_focus": "C++"
   },
   {
     "company": "Wipro",
-    "min_cgpa": 7.0,
+    "min_cgpa": 6.7,
     "max_backlogs": 1,
     "package_lpa": 26.1,
-    "bond_years": 0.0,
-    "tech_focus": "Java, Testing",
-    "key_topics": "Java Syntax, Software Testing Methodologies, Manual & Automation Testing"
+    "bond_years": 1,
+    "key_topics": "DSA, System Design",
+    "tech_focus": "System Design"
   },
   {
     "company": "Cognizant",
     "min_cgpa": 8.4,
     "max_backlogs": 0,
     "package_lpa": 42.3,
-    "bond_years": 1.0,
-    "tech_focus": "Python, React",
-    "key_topics": "Python Scripting, Frontend React Framework, JavaScript, HTML, CSS"
+    "bond_years": 2,
+    "key_topics": "DSA, Java",
+    "tech_focus": "Java"
   },
   {
     "company": "Capgemini",
-    "min_cgpa": 8.0,
+    "min_cgpa": 7.1,
     "max_backlogs": 0,
     "package_lpa": 38.3,
-    "bond_years": 1.0,
-    "tech_focus": "Cloud, Devops",
-    "key_topics": "AWS Services, Docker Containers, CI/CD pipelines, Networking Basics"
+    "bond_years": 2,
+    "key_topics": "DSA, C++",
+    "tech_focus": "C++"
   },
   {
     "company": "IBM",
-    "min_cgpa": 7.2,
+    "min_cgpa": 7.5,
     "max_backlogs": 2,
-    "package_lpa": 18.5,
-    "bond_years": 0.0,
-    "tech_focus": "Java, Cloud",
-    "key_topics": "Java OOPs, Cloud Architecture, Linux commands, Shell scripting"
+    "package_lpa": 27.5,
+    "bond_years": 0,
+    "key_topics": "DSA, Cloud",
+    "tech_focus": "C++"
   },
   {
     "company": "Adobe",
-    "min_cgpa": 7.8,
+    "min_cgpa": 7.5,
     "max_backlogs": 0,
-    "package_lpa": 40.5,
-    "bond_years": 1.0,
-    "tech_focus": "C++, Algorithms",
-    "key_topics": "Advanced C++, Memory Management, Compiler Optimization, Vector calculations"
+    "package_lpa": 18.3,
+    "bond_years": 1,
+    "key_topics": "DSA, System Design",
+    "tech_focus": "System Design"
   },
   {
     "company": "Oracle",
-    "min_cgpa": 7.5,
+    "min_cgpa": 7.7,
     "max_backlogs": 0,
-    "package_lpa": 36.5,
-    "bond_years": 2.0,
-    "tech_focus": "SQL, Java",
-    "key_topics": "SQL joins, SQL subqueries, Java collections framework, Multithreading"
+    "package_lpa": 17.3,
+    "bond_years": 2,
+    "key_topics": "DSA, DBMS",
+    "tech_focus": "Python"
   },
   {
     "company": "SAP",
     "min_cgpa": 8.4,
     "max_backlogs": 0,
     "package_lpa": 20.7,
-    "bond_years": 1.0,
-    "tech_focus": "Java, HANA",
-    "key_topics": "ABAP, SAP architecture, In-memory databases, Java enterprise beans"
+    "bond_years": 2,
+    "key_topics": "DSA, C++",
+    "tech_focus": "C++"
   },
   {
     "company": "HCL",
     "min_cgpa": 8.4,
-    "max_backlogs": 0,
+    "max_backlogs": 1,
     "package_lpa": 28.1,
-    "bond_years": 1.0,
-    "tech_focus": "C++, Embedded",
-    "key_topics": "Microcontrollers, C++ structures, Real time OS (RTOS), Hardware interrupts"
+    "bond_years": 2,
+    "key_topics": "DSA, Cloud",
+    "tech_focus": "Cloud"
   },
   {
     "company": "Tech Mahindra",
     "min_cgpa": 8.1,
     "max_backlogs": 2,
-    "package_lpa": 16.5,
-    "bond_years": 1.5,
-    "tech_focus": "Python, Network",
-    "key_topics": "Socket programming, TCP/IP protocols, Python network automation, routing tables"
+    "package_lpa": 35.9,
+    "bond_years": 1,
+    "key_topics": "DSA, System Design",
+    "tech_focus": "System Design"
   },
   {
     "company": "Qualcomm",
-    "min_cgpa": 7.0,
+    "min_cgpa": 7.2,
     "max_backlogs": 2,
-    "package_lpa": 32.5,
-    "bond_years": 1.0,
-    "tech_focus": "C, Embedded",
-    "key_topics": "Pointers in C, Bitwise operations, Embedded firmware, Kernel modules"
+    "package_lpa": 41.3,
+    "bond_years": 1,
+    "key_topics": "DSA, Cloud",
+    "tech_focus": "Cloud"
   },
   {
     "company": "Intel",
-    "min_cgpa": 7.5,
+    "min_cgpa": 7.0,
     "max_backlogs": 0,
     "package_lpa": 41.4,
-    "bond_years": 0.0,
-    "tech_focus": "Python, VHDL",
-    "key_topics": "Digital logic, VHDL, Python script testing, Processor architecture"
+    "bond_years": 0,
+    "key_topics": "DSA, Python",
+    "tech_focus": "Python"
   },
   {
     "company": "Samsung R&D",
-    "min_cgpa": 7.5,
+    "min_cgpa": 6.3,
     "max_backlogs": 2,
-    "package_lpa": 22.0,
-    "bond_years": 1.0,
-    "tech_focus": "C++, Embedded",
-    "key_topics": "Android internals, C++ design patterns, Image processing algorithms"
+    "package_lpa": 7.6,
+    "bond_years": 2,
+    "key_topics": "DSA, Java",
+    "tech_focus": "Java"
   }
 ]

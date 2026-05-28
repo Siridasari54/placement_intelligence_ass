@@ -1,1 +1,0 @@
-from app.retrieval.vector_retriever import VectorRetriever

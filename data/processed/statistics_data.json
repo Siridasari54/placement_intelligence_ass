@@ -1,0 +1,162 @@
+[
+  {
+    "company": "TCS",
+    "avg_package": 27.3,
+    "max_offers": 56,
+    "min_offers": 12,
+    "avg_cgpa_cutoff": 7.5,
+    "bond_free": "Yes"
+  },
+  {
+    "company": "Infosys",
+    "avg_package": 27.2,
+    "max_offers": 149,
+    "min_offers": 30,
+    "avg_cgpa_cutoff": 8.0,
+    "bond_free": "Yes"
+  },
+  {
+    "company": "Deloitte",
+    "avg_package": 8.4,
+    "max_offers": 127,
+    "min_offers": 22,
+    "avg_cgpa_cutoff": 7.7,
+    "bond_free": "No"
+  },
+  {
+    "company": "Accenture",
+    "avg_package": 9.2,
+    "max_offers": 110,
+    "min_offers": 18,
+    "avg_cgpa_cutoff": 8.2,
+    "bond_free": "No"
+  },
+  {
+    "company": "Amazon",
+    "avg_package": 20.5,
+    "max_offers": 87,
+    "min_offers": 15,
+    "avg_cgpa_cutoff": 6.4,
+    "bond_free": "No"
+  },
+  {
+    "company": "Flipkart",
+    "avg_package": 12.7,
+    "max_offers": 113,
+    "min_offers": 20,
+    "avg_cgpa_cutoff": 7.8,
+    "bond_free": "No"
+  },
+  {
+    "company": "Google",
+    "avg_package": 25.7,
+    "max_offers": 136,
+    "min_offers": 28,
+    "avg_cgpa_cutoff": 7.4,
+    "bond_free": "No"
+  },
+  {
+    "company": "Microsoft",
+    "avg_package": 26.9,
+    "max_offers": 157,
+    "min_offers": 32,
+    "avg_cgpa_cutoff": 6.1,
+    "bond_free": "Yes"
+  },
+  {
+    "company": "Wipro",
+    "avg_package": 22.2,
+    "max_offers": 111,
+    "min_offers": 19,
+    "avg_cgpa_cutoff": 6.7,
+    "bond_free": "No"
+  },
+  {
+    "company": "Cognizant",
+    "avg_package": 34.2,
+    "max_offers": 70,
+    "min_offers": 10,
+    "avg_cgpa_cutoff": 8.4,
+    "bond_free": "No"
+  },
+  {
+    "company": "Capgemini",
+    "avg_package": 29.1,
+    "max_offers": 95,
+    "min_offers": 14,
+    "avg_cgpa_cutoff": 7.1,
+    "bond_free": "No"
+  },
+  {
+    "company": "IBM",
+    "avg_package": 18.4,
+    "max_offers": 88,
+    "min_offers": 16,
+    "avg_cgpa_cutoff": 7.5,
+    "bond_free": "Yes"
+  },
+  {
+    "company": "Adobe",
+    "avg_package": 15.2,
+    "max_offers": 72,
+    "min_offers": 11,
+    "avg_cgpa_cutoff": 7.5,
+    "bond_free": "No"
+  },
+  {
+    "company": "Oracle",
+    "avg_package": 13.8,
+    "max_offers": 102,
+    "min_offers": 18,
+    "avg_cgpa_cutoff": 7.7,
+    "bond_free": "No"
+  },
+  {
+    "company": "SAP",
+    "avg_package": 17.5,
+    "max_offers": 60,
+    "min_offers": 9,
+    "avg_cgpa_cutoff": 8.4,
+    "bond_free": "No"
+  },
+  {
+    "company": "HCL",
+    "avg_package": 21.3,
+    "max_offers": 80,
+    "min_offers": 13,
+    "avg_cgpa_cutoff": 8.4,
+    "bond_free": "No"
+  },
+  {
+    "company": "Tech Mahindra",
+    "avg_package": 28.7,
+    "max_offers": 90,
+    "min_offers": 17,
+    "avg_cgpa_cutoff": 8.1,
+    "bond_free": "No"
+  },
+  {
+    "company": "Qualcomm",
+    "avg_package": 33.2,
+    "max_offers": 78,
+    "min_offers": 12,
+    "avg_cgpa_cutoff": 7.2,
+    "bond_free": "No"
+  },
+  {
+    "company": "Intel",
+    "avg_package": 32.5,
+    "max_offers": 68,
+    "min_offers": 10,
+    "avg_cgpa_cutoff": 7.0,
+    "bond_free": "Yes"
+  },
+  {
+    "company": "Samsung R&D",
+    "avg_package": 6.4,
+    "max_offers": 82,
+    "min_offers": 14,
+    "avg_cgpa_cutoff": 6.3,
+    "bond_free": "No"
+  }
+]
