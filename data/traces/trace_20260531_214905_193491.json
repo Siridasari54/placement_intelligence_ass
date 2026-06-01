@@ -1,0 +1,118 @@
+{
+  "trace_id": "trace_20260531_214905_193491",
+  "query": "What rounds does TCS conduct?",
+  "start_time": "2026-05-31T21:49:05.193611",
+  "end_time": "2026-05-31T21:49:15.022424",
+  "total_duration_ms": 9828.813,
+  "query_type": "factual",
+  "retrieval_strategy": "keyword_heavy",
+  "final_answer": "TCS conducts 1 round as mentioned in the context, which is referred to as \"E7 What rounds does TCS conduct?\" However, it is labeled as \"Easy Text retrieval\", implying that there is only one round. \n\n[Source 1]: E7 What rounds does TCS conduct?",
+  "confidence_score": 0.2,
+  "success": true,
+  "error_message": "",
+  "metadata": {},
+  "stages": [
+    {
+      "stage": "query_planning",
+      "start_time": "2026-05-31T21:49:05.194917",
+      "end_time": "2026-05-31T21:49:05.195423",
+      "duration_ms": 0.506,
+      "input_data": {
+        "query": "What rounds does TCS conduct?"
+      },
+      "output_data": {
+        "routed_to_tool": false
+      },
+      "success": true,
+      "error_message": ""
+    },
+    {
+      "stage": "retrieval",
+      "start_time": "2026-05-31T21:49:05.689027",
+      "end_time": "2026-05-31T21:49:09.020253",
+      "duration_ms": 3331.226,
+      "input_data": {},
+      "output_data": {
+        "retrieved_count": 20
+      },
+      "success": true,
+      "error_message": ""
+    },
+    {
+      "stage": "reranking",
+      "start_time": "2026-05-31T21:49:09.020689",
+      "end_time": "2026-05-31T21:49:09.021914",
+      "duration_ms": 1.2249999999999999,
+      "input_data": {},
+      "output_data": {
+        "reranked_count": 5
+      },
+      "success": true,
+      "error_message": ""
+    },
+    {
+      "stage": "refinement",
+      "start_time": "2026-05-31T21:49:09.022555",
+      "end_time": "2026-05-31T21:49:09.023884",
+      "duration_ms": 1.3290000000000002,
+      "input_data": {},
+      "output_data": {
+        "refined_count": 1
+      },
+      "success": true,
+      "error_message": ""
+    },
+    {
+      "stage": "query_rewriting",
+      "start_time": "2026-05-31T21:49:09.024255",
+      "end_time": "2026-05-31T21:49:09.801537",
+      "duration_ms": 777.282,
+      "input_data": {
+        "before_s2a": 1
+      },
+      "output_data": {
+        "after_s2a": 1
+      },
+      "success": true,
+      "error_message": ""
+    },
+    {
+      "stage": "validation",
+      "start_time": "2026-05-31T21:49:09.803220",
+      "end_time": "2026-05-31T21:49:09.804519",
+      "duration_ms": 1.299,
+      "input_data": {},
+      "output_data": {
+        "out_of_corpus": false
+      },
+      "success": true,
+      "error_message": ""
+    },
+    {
+      "stage": "generation",
+      "start_time": "2026-05-31T21:49:09.804697",
+      "end_time": "2026-05-31T21:49:11.340917",
+      "duration_ms": 1536.22,
+      "input_data": {},
+      "output_data": {
+        "answer": "TCS conducts 1 round as mentioned in the context, which is referred to as \"E7 What rounds does TCS conduct?\" However, it is labeled as \"Easy Text retrieval\", implying that there is only one round. \n\n[Source 1]: E7 What rounds does TCS conduct?"
+      },
+      "success": true,
+      "error_message": ""
+    },
+    {
+      "stage": "reliability_check",
+      "start_time": "2026-05-31T21:49:11.341844",
+      "end_time": "2026-05-31T21:49:15.021581",
+      "duration_ms": 3679.7369999999996,
+      "input_data": {},
+      "output_data": {
+        "verdict": "WARN",
+        "groundedness": 0.5
+      },
+      "success": true,
+      "error_message": ""
+    }
+  ],
+  "chunks": []
+}

@@ -1,0 +1,118 @@
+{
+  "trace_id": "trace_20260601_213527_862212",
+  "query": "Is the Amazon CGPA cutoff 6.4 or 7.0? Explain.",
+  "start_time": "2026-06-01T21:35:27.862365",
+  "end_time": "2026-06-01T21:36:10.230989",
+  "total_duration_ms": 42368.623999999996,
+  "query_type": "factual",
+  "retrieval_strategy": "semantic_heavy",
+  "final_answer": "Based on the provided context, it appears that there is a conflict in Amazon's CGPA cutoff. According to [Source 1]: Amazon Official Criteria, the CGPA cutoff is 6.4. However, [Source 2]: Amazon Portal Criteria states that the CGPA cutoff is 7.0.\n\nTherefore, the Amazon CGPA cutoff is conflicting across sources. This indicates that the actual cutoff might be either 6.4 or 7.0. However, since [Source 2] is an Amazon Portal Criteria, it is likely that this is the updated or official cutoff. \n\nHence, the answer is that the Amazon CGPA cutoff is 7.0 as per [Source 2].",
+  "confidence_score": 0.2008621537746058,
+  "success": true,
+  "error_message": "",
+  "metadata": {},
+  "stages": [
+    {
+      "stage": "query_planning",
+      "start_time": "2026-06-01T21:35:27.862764",
+      "end_time": "2026-06-01T21:35:27.863405",
+      "duration_ms": 0.641,
+      "input_data": {
+        "query": "Is the Amazon CGPA cutoff 6.4 or 7.0? Explain."
+      },
+      "output_data": {
+        "routed_to_tool": false
+      },
+      "success": true,
+      "error_message": ""
+    },
+    {
+      "stage": "retrieval",
+      "start_time": "2026-06-01T21:35:28.324051",
+      "end_time": "2026-06-01T21:35:31.819018",
+      "duration_ms": 3494.967,
+      "input_data": {},
+      "output_data": {
+        "retrieved_count": 25
+      },
+      "success": true,
+      "error_message": ""
+    },
+    {
+      "stage": "reranking",
+      "start_time": "2026-06-01T21:35:31.819352",
+      "end_time": "2026-06-01T21:35:31.820280",
+      "duration_ms": 0.928,
+      "input_data": {},
+      "output_data": {
+        "reranked_count": 5
+      },
+      "success": true,
+      "error_message": ""
+    },
+    {
+      "stage": "refinement",
+      "start_time": "2026-06-01T21:35:31.820523",
+      "end_time": "2026-06-01T21:35:31.821428",
+      "duration_ms": 0.905,
+      "input_data": {},
+      "output_data": {
+        "refined_count": 5
+      },
+      "success": true,
+      "error_message": ""
+    },
+    {
+      "stage": "query_rewriting",
+      "start_time": "2026-06-01T21:35:31.821781",
+      "end_time": "2026-06-01T21:35:34.765616",
+      "duration_ms": 2943.835,
+      "input_data": {
+        "before_s2a": 5
+      },
+      "output_data": {
+        "after_s2a": 4
+      },
+      "success": true,
+      "error_message": ""
+    },
+    {
+      "stage": "validation",
+      "start_time": "2026-06-01T21:35:34.767295",
+      "end_time": "2026-06-01T21:35:34.771228",
+      "duration_ms": 3.933,
+      "input_data": {},
+      "output_data": {
+        "out_of_corpus": false
+      },
+      "success": true,
+      "error_message": ""
+    },
+    {
+      "stage": "generation",
+      "start_time": "2026-06-01T21:35:34.772347",
+      "end_time": "2026-06-01T21:35:36.895416",
+      "duration_ms": 2123.069,
+      "input_data": {},
+      "output_data": {
+        "answer": "Based on the provided context, it appears that there is a conflict in Amazon's CGPA cutoff. According to [Source 1]: Amazon Official Criteria, the CGPA cutoff is 6.4. However, [Source 2]: Amazon Portal Criteria states that the CGPA cutoff is 7.0.\n\nTherefore, the Amazon CGPA cutoff is conflicting across sources. This indicates that the actual cutoff might be either 6.4 or 7.0. However, since [Source 2] is an Amazon Portal Criteria, it is likely that this is the updated or official cutoff. \n\nHence, the answer is that the Amazon CGPA cutoff is 7.0 as per [Source 2]."
+      },
+      "success": true,
+      "error_message": ""
+    },
+    {
+      "stage": "reliability_check",
+      "start_time": "2026-06-01T21:35:36.895886",
+      "end_time": "2026-06-01T21:36:10.224224",
+      "duration_ms": 33328.338,
+      "input_data": {},
+      "output_data": {
+        "verdict": "WARN",
+        "groundedness": 1.0
+      },
+      "success": true,
+      "error_message": ""
+    }
+  ],
+  "chunks": []
+}

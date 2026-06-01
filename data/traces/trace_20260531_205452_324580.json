@@ -1,0 +1,118 @@
+{
+  "trace_id": "trace_20260531_205452_324580",
+  "query": "What rounds does TCS conduct?",
+  "start_time": "2026-05-31T20:54:52.324754",
+  "end_time": "2026-05-31T20:55:02.293692",
+  "total_duration_ms": 9968.938,
+  "query_type": "factual",
+  "retrieval_strategy": "keyword_heavy",
+  "final_answer": "I apologize, but I cannot verify this information accurately against official placement documents, so I cannot provide a reliable answer.",
+  "confidence_score": 0.0,
+  "success": false,
+  "error_message": "",
+  "metadata": {},
+  "stages": [
+    {
+      "stage": "query_planning",
+      "start_time": "2026-05-31T20:54:52.325219",
+      "end_time": "2026-05-31T20:54:52.325611",
+      "duration_ms": 0.392,
+      "input_data": {
+        "query": "What rounds does TCS conduct?"
+      },
+      "output_data": {
+        "routed_to_tool": false
+      },
+      "success": true,
+      "error_message": ""
+    },
+    {
+      "stage": "retrieval",
+      "start_time": "2026-05-31T20:54:52.623640",
+      "end_time": "2026-05-31T20:54:56.874308",
+      "duration_ms": 4250.668,
+      "input_data": {},
+      "output_data": {
+        "retrieved_count": 20
+      },
+      "success": true,
+      "error_message": ""
+    },
+    {
+      "stage": "reranking",
+      "start_time": "2026-05-31T20:54:56.874788",
+      "end_time": "2026-05-31T20:54:56.875943",
+      "duration_ms": 1.155,
+      "input_data": {},
+      "output_data": {
+        "reranked_count": 5
+      },
+      "success": true,
+      "error_message": ""
+    },
+    {
+      "stage": "refinement",
+      "start_time": "2026-05-31T20:54:56.876354",
+      "end_time": "2026-05-31T20:54:56.877853",
+      "duration_ms": 1.4989999999999999,
+      "input_data": {},
+      "output_data": {
+        "refined_count": 1
+      },
+      "success": true,
+      "error_message": ""
+    },
+    {
+      "stage": "query_rewriting",
+      "start_time": "2026-05-31T20:54:56.878277",
+      "end_time": "2026-05-31T20:54:57.879598",
+      "duration_ms": 1001.3209999999999,
+      "input_data": {
+        "before_s2a": 1
+      },
+      "output_data": {
+        "after_s2a": 1
+      },
+      "success": true,
+      "error_message": ""
+    },
+    {
+      "stage": "validation",
+      "start_time": "2026-05-31T20:54:57.881215",
+      "end_time": "2026-05-31T20:54:57.883080",
+      "duration_ms": 1.865,
+      "input_data": {},
+      "output_data": {
+        "out_of_corpus": false
+      },
+      "success": true,
+      "error_message": ""
+    },
+    {
+      "stage": "generation",
+      "start_time": "2026-05-31T20:54:57.883387",
+      "end_time": "2026-05-31T20:54:59.830725",
+      "duration_ms": 1947.338,
+      "input_data": {},
+      "output_data": {
+        "answer": "TCS conducts 7 rounds. \n\n[Source 1]: E7 What rounds does TCS conduct?"
+      },
+      "success": true,
+      "error_message": ""
+    },
+    {
+      "stage": "reliability_check",
+      "start_time": "2026-05-31T20:54:59.831015",
+      "end_time": "2026-05-31T20:55:02.291850",
+      "duration_ms": 2460.835,
+      "input_data": {},
+      "output_data": {
+        "verdict": "FAIL",
+        "groundedness": 0.0
+      },
+      "success": true,
+      "error_message": ""
+    }
+  ],
+  "chunks": []
+}
