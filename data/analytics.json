@@ -1,0 +1,25 @@
+[
+  {
+    "query": "What rounds does TCS conduct?",
+    "timestamp": "2026-05-31T20:55:02.299830",
+    "latency_ms": 0.0,
+    "documents_retrieved": 20,
+    "documents_reranked": 1,
+    "confidence_score": 0.0,
+    "reranking_scores": [
+      0.01639344262295082
+    ],
+    "source_distribution": {
+      "placement_dataset.pdf": 1
+    },
+    "chunk_utilization": 0.201,
+    "token_usage": 50,
+    "metadata": {
+      "overshadow_risk": 0.04717529296875,
+      "latency_ms": 9975.039005279541,
+      "verdict": "FAIL",
+      "groundedness": 0.0,
+      "consistency": 0.2429673074834365
+    }
+  }
+]
