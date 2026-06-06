@@ -46,11 +46,20 @@ class RetrievalAnalytics:
     def _load_analytics(self) -> None:
         """Load analytics from file."""
         if os.path.exists(self.analytics_file):
-            with open(self.analytics_file, 'r') as f:
-                data = json.load(f)
-                self.metrics_history = [
-                    RetrievalMetrics(**metric) for metric in data
-                ]
+            try:
+                with open(self.analytics_file, 'r') as f:
+                    data = json.load(f)
+                    self.metrics_history = []
+                    for metric in data:
+                        if isinstance(metric.get("timestamp"), str):
+                            try:
+                                metric["timestamp"] = datetime.fromisoformat(metric["timestamp"])
+                            except Exception:
+                                metric["timestamp"] = datetime.now()
+                        self.metrics_history.append(RetrievalMetrics(**metric))
+            except Exception as e:
+                logger.error(f"Error loading analytics file: {e}")
+                self.metrics_history = []
         else:
             self.metrics_history = []
     
