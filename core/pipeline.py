@@ -1,6 +1,8 @@
-"""Core RAG pipeline orchestrator implementing 6-stage architecture with intelligent routing."""
+"""Core RAG pipeline orchestrator implementing 6-stage architecture with intelligent routing and hallucination prevention."""
 
-from typing import List, Dict, Any, Optional, Tuple
+import time
+import re
+from typing import List, Dict, Any, Optional, Tuple, TYPE_CHECKING
 from langchain_core.documents import Document
 from core.interfaces import (
     IParser, IChunker, IEmbedder, IVectorStore,
@@ -17,6 +19,10 @@ try:
     QUERY_PLANNING_AVAILABLE = True
 except ImportError:
     QUERY_PLANNING_AVAILABLE = False
+    QueryPlanner = None
+    QueryType = None
+    AdaptiveRetrievalStrategy = None
+    RetrievalMode = None
     logging.warning("Query planning modules not available")
 
 # Import multi-hop retriever
@@ -25,6 +31,7 @@ try:
     MULTI_HOP_AVAILABLE = True
 except ImportError:
     MULTI_HOP_AVAILABLE = False
+    MultiHopRetriever = None
     logging.warning("Multi-hop retriever not available")
 
 # Import memory system
@@ -33,14 +40,144 @@ try:
     MEMORY_AVAILABLE = True
 except ImportError:
     MEMORY_AVAILABLE = False
+    AIMemorySystem = None
     logging.warning("Memory system not available")
+
+# Import engineering control services
+from core.reliability.system_reliability import SystemReliabilityLayer, ReliabilityCheck
+from core.observability.pipeline_tracer import PipelineTracer, PipelineStage
+from core.analytics.retrieval_analytics import RetrievalAnalytics
+from safety.overshadow_limiter import OvershadowLimiter
+from safety.fallback_guard import FallbackGuard
 
 logging.basicConfig(level=settings.log_level)
 logger = logging.getLogger(__name__)
 
 
+class ToolRouter:
+    """Intelligent router that automatically dispatches queries to Calculator, Database, Web Search, or Opinion Guard using LLM classification."""
+    
+    def __init__(self):
+        """Initialize the Tool Router and register tools."""
+        self.tools = {}
+        self.client = None
+        try:
+            from groq import Groq
+            from config.settings import settings
+            self.api_key = settings.groq_api_key
+            self.model = settings.generation.model
+            if self.api_key:
+                self.client = Groq(api_key=self.api_key)
+        except Exception as e:
+            logger.error(f"Error importing or initializing Groq in ToolRouter: {e}")
+        logger.info("Intelligent LLM Tool Router initialized")
+        
+    def register_tool(self, name: str, tool: Any) -> None:
+        """Register a tool instance."""
+        self.tools[name] = tool
+        logger.info(f"Registered tool: {name}")
+        
+    def classify_and_dispatch(self, query: str) -> Optional[str]:
+        """Classify query intent and route to the correct tool automatically.
+        
+        Args:
+            query: User query string
+            
+        Returns:
+            Factual tool result string, or None if query requires RAG pipeline
+        """
+        query_lower = query.lower()
+        
+        # 1. First attempt: LLM-based agentic classification
+        if self.client:
+            try:
+                import json
+                prompt = f"""You are an intelligent query router for a college placement assistant.
+Analyze the user's query and decide which tool is best suited to answer it.
+
+Available Tools:
+1. "database": For structured query lookups about student records, eligibility checks, list of students placed, roll numbers, GPA cutoffs, or packages.
+   Examples: "Who got placed at Google?", "Which student has the highest GPA?", "List companies with package above 10 LPA", "Check eligibility for 22CS010".
+2. "web_search": For questions requiring live web lookup, current news, company CEOs, or general topics outside our static placement dataset.
+   Examples: "Who is the CEO of Google?", "What are the latest hiring trends in 2026?", "Who founded Wipro?".
+3. "calculator": For mathematical operations, conversions (e.g. CGPA to percentage, average calculations).
+   Examples: "What is 8.5 CGPA in percentage?", "Calculate average of 5, 8, 12", "Convert 85% to CGPA".
+4. "opinion_guard": For career guidance, subjective recommendations, or comparisons between companies.
+   Examples: "Should I join TCS or Infosys?", "Compare Google and Amazon", "Which company offers a better career growth?".
+5. "rag": For general placement dataset queries, company interview experiences, recruitment distributions, official process details, and general corpus lookup.
+   Examples: "What is Google's interview process?", "What rounds does TCS have?", "What is SVECW's placement history?".
+
+Choose exactly one tool from: ["database", "web_search", "calculator", "opinion_guard", "rag"].
+Respond in JSON format with two keys:
+- "tool": The chosen tool name (or "rag" if none of the specific tools are suitable).
+- "reason": A brief reason for this decision.
+
+Query: "{query}"
+JSON classification:"""
+
+                response = self.client.chat.completions.create(
+                    model=self.model,
+                    messages=[
+                        {"role": "system", "content": "You are a precise query classifier that outputs JSON containing 'tool' and 'reason'."},
+                        {"role": "user", "content": prompt}
+                    ],
+                    temperature=0.0,
+                    response_format={"type": "json_object"}
+                )
+                
+                res_content = response.choices[0].message.content.strip()
+                res_data = json.loads(res_content)
+                chosen_tool = res_data.get("tool", "rag")
+                reason = res_data.get("reason", "")
+                
+                logger.info(f"LLM Routing Decision: Selected '{chosen_tool}' (Reason: {reason})")
+                
+                if chosen_tool in self.tools:
+                    logger.info(f"Routing query to registered tool '{chosen_tool}'")
+                    return self.tools[chosen_tool].execute(query)
+                elif chosen_tool == "rag":
+                    return None
+                    
+            except Exception as e:
+                logger.error(f"LLM Tool Router failed: {e}. Falling back to heuristics.")
+
+        # 2. Heuristic/Regex fallback if LLM routing fails or is unavailable
+        # Opinion Guard fallback
+        opinion_indicators = [
+            "which is better", "should i join", "which is the best", "choose between", 
+            "compare", "versus", "vs", "which has better career"
+        ]
+        if any(indicator in query_lower for indicator in opinion_indicators):
+            if "opinion_guard" in self.tools:
+                logger.info("Routing query to Opinion Guard (Heuristic)")
+                return self.tools["opinion_guard"].execute(query)
+                
+        # Calculator fallback
+        math_indicators = [
+            "average", "mean", "cgpa to percentage", "percentage to cgpa", "convert",
+            "calculate", "sum", "divided by", "multiplied by", "subtract", "plus"
+        ]
+        if any(ind in query_lower for ind in math_indicators) and any(c.isdigit() for c in query_lower):
+            if "calculator" in self.tools:
+                logger.info("Routing query to Calculator Tool (Heuristic)")
+                return self.tools["calculator"].execute(query)
+                
+        # Database fallback
+        db_indicators = [
+            "list companies", "which companies allow", "companies with cgpa", "cutoff above",
+            "cutoff below", "package above", "package below", "allow at least", "no backlog", "zero backlog",
+            "placed", "student", "roll number"
+        ]
+        if any(ind in query_lower for ind in db_indicators):
+            if "database" in self.tools:
+                logger.info("Routing query to Database Tool (Heuristic)")
+                return self.tools["database"].execute(query)
+                
+        return None
+
+
 class RAGPipeline:
-    """6-stage RAG orchestrator for placement intelligence with intelligent routing."""
+    """6-stage RAG orchestrator for placement intelligence with intelligent routing, tracing, and hallucination guards."""
     
     def __init__(
         self,
@@ -53,28 +190,16 @@ class RAGPipeline:
         refiner: IRefiner,
         generator: IGenerator,
         safety_checker: ISafetyChecker,
-        query_planner: Optional[QueryPlanner] = None,
-        adaptive_strategy: Optional[AdaptiveRetrievalStrategy] = None,
-        memory_system: Optional[AIMemorySystem] = None,
-        multi_hop_retriever: Optional[MultiHopRetriever] = None
+        query_planner: Optional['QueryPlanner'] = None,
+        adaptive_strategy: Optional['AdaptiveRetrievalStrategy'] = None,
+        memory_system: Optional['AIMemorySystem'] = None,
+        multi_hop_retriever: Optional['MultiHopRetriever'] = None,
+        pipeline_tracer: Optional[PipelineTracer] = None,
+        retrieval_analytics: Optional[RetrievalAnalytics] = None,
+        reliability_layer: Optional[SystemReliabilityLayer] = None,
+        overshadow_limiter: Optional[OvershadowLimiter] = None,
+        fallback_guard: Optional[FallbackGuard] = None
     ):
-        """Initialize the RAG pipeline with all components.
-        
-        Args:
-            parser: Document parser
-            chunker: Document chunker
-            embedder: Embedding generator
-            vector_store: Vector storage
-            retriever: Document retriever
-            reranker: Document reranker
-            refiner: Context refiner
-            generator: Answer generator
-            safety_checker: Safety validation
-            query_planner: Optional query planner for intelligent routing
-            adaptive_strategy: Optional adaptive retrieval strategy
-            memory_system: Optional memory system for caching and conversation history
-            multi_hop_retriever: Optional multi-hop retriever for complex queries
-        """
         self.parser = parser
         self.chunker = chunker
         self.embedder = embedder
@@ -89,39 +214,51 @@ class RAGPipeline:
         self.memory_system = memory_system
         self.multi_hop_retriever = multi_hop_retriever
         
+        # Instantiate and wire Observability, Reliability & Truncation Layer
+        self.pipeline_tracer = pipeline_tracer or PipelineTracer()
+        self.retrieval_analytics = retrieval_analytics or RetrievalAnalytics()
+        self.reliability_layer = reliability_layer or SystemReliabilityLayer()
+        self.overshadow_limiter = overshadow_limiter or OvershadowLimiter()
+        self.fallback_guard = fallback_guard or FallbackGuard()
+        
         # Initialize multi-hop retriever if not provided but available
-        if self.multi_hop_retriever is None and MULTI_HOP_AVAILABLE:
+        if self.multi_hop_retriever is None and MULTI_HOP_AVAILABLE and MultiHopRetriever is not None:
             self.multi_hop_retriever = MultiHopRetriever(
                 base_retriever=retriever,
                 max_hops=3,
                 min_confidence=0.6,
                 enable_query_rewriting=True
             )
+            
+        # Initialize Tool Router and register tools
+        self.tool_router = ToolRouter()
         
-        logger.info("RAG Pipeline initialized with all components including multi-hop support")
+        from core.tools.calculator import CalculatorTool
+        from core.tools.database_tool import DatabaseTool
+        from core.tools.opinion_guard import OpinionGuard
+        from core.tools.web_search import WebSearchTool
+        
+        self.tool_router.register_tool("calculator", CalculatorTool())
+        self.tool_router.register_tool("database", DatabaseTool())
+        self.tool_router.register_tool("opinion_guard", OpinionGuard())
+        self.tool_router.register_tool("web_search", WebSearchTool())
+        
+        logger.info("RAG Pipeline initialized with LLM Tool Router and WebSearch.")
     
     def ingest(self, file_path: str) -> None:
-        """Stage 0: Parse → Chunk → Embed → Index.
-        
-        Args:
-            file_path: Path to document file
-        """
+        """Stage 0: Parse → Chunk → Embed → Index."""
         logger.info(f"Starting ingestion for {file_path}")
         
-        # Stage 0.1: Parse
         documents = self.parser.parse(file_path)
         logger.info(f"Parsed {len(documents)} documents")
         
-        # Stage 0.2: Chunk
         chunks = self.chunker.chunk(documents)
         logger.info(f"Generated {len(chunks)} chunks")
         
-        # Stage 0.3: Embed
         texts = [doc.page_content for doc in chunks]
         embeddings = self.embedder.embed_documents(texts)
         logger.info(f"Generated {len(embeddings)} embeddings")
         
-        # Stage 0.4: Index
         dict_chunks = [
             {
                 "text": doc.page_content,
@@ -133,31 +270,94 @@ class RAGPipeline:
         logger.info("Documents indexed successfully")
     
     def query(self, query: str) -> Dict[str, Any]:
-        """Execute full RAG pipeline with intelligent routing and memory: Memory Check → Query Planning → Retrieval → Reranking → Refinement → Generation → Safety → Memory Update.
-        
-        Args:
-            query: User query
-            
-        Returns:
-            Dictionary containing answer, sources, and metadata
-        """
+        """Execute full RAG pipeline with intelligent routing, memory, and hallucination checks."""
         logger.info(f"Processing query: {query}")
+        start_time = time.time()
         
-        # Stage 0.5: Check semantic cache (if available)
+        # Start Trace
+        trace_id = self.pipeline_tracer.start_trace(query)
+        trace_stages = []
+        
+        # ── STAGE 0: Intelligent Tool Routing ─────────────────────────────────
+        self.pipeline_tracer.start_stage(PipelineStage.QUERY_PLANNING, {"query": query})
+        
+        tool_result = self.tool_router.classify_and_dispatch(query)
+        
+        self.pipeline_tracer.end_stage(PipelineStage.QUERY_PLANNING, {"routed_to_tool": tool_result is not None})
+        trace_stages.append("query_planning")
+        
+        if tool_result:
+            latency_ms = (time.time() - start_time) * 1000
+            
+            # Trace Tool Execution
+            self.pipeline_tracer.start_stage(PipelineStage.GENERATION, {"tool": "execution"})
+            self.pipeline_tracer.end_stage(PipelineStage.GENERATION, {"answer": tool_result})
+            trace_stages.append("generation")
+            
+            self.pipeline_tracer.set_query_info("tool_query", "direct_lookup")
+            self.pipeline_tracer.set_final_answer(tool_result, 1.0)
+            self.pipeline_tracer.end_trace(success=True)
+            
+            # Log Tool execution in analytics
+            self.retrieval_analytics.track_retrieval(
+                query=query,
+                retrieved_docs=[],
+                reranked_docs=[],
+                confidence_score=1.0,
+                reranking_scores=[],
+                token_usage=0,
+                metadata={"tool_execution": True, "latency_ms": latency_ms}
+            )
+            
+            return {
+                "answer": tool_result,
+                "sources": [],
+                "confidence": 1.0,
+                "conflicts": 0,
+                "query_type": "tool_query",
+                "retrieval_mode": "direct_lookup",
+                "cached": False,
+                "reliability": {
+                    "passed": True,
+                    "verdict": "PASS",
+                    "confidence": 1.0,
+                    "issues": [],
+                    "groundedness_score": 1.0,
+                    "consistency_score": 1.0,
+                    "lookback_ratio": 1.0
+                }
+            }
+            
+        # ── STAGE 0.5: Semantic Cache Check ────────────────────────────────────
         if self.memory_system and MEMORY_AVAILABLE:
             cached_result = self.memory_system.semantic_cache.get(query)
             if cached_result:
                 logger.info("Query found in semantic cache, returning cached result")
+                latency_ms = (time.time() - start_time) * 1000
+                
+                self.pipeline_tracer.set_query_info("cached_query", "cached")
+                self.pipeline_tracer.set_final_answer(cached_result["answer"], 0.9)
+                self.pipeline_tracer.end_trace(success=True)
+                
                 return {
                     "answer": cached_result["answer"],
                     "sources": cached_result.get("sources", []),
                     "confidence": cached_result.get("confidence", 0.9),
                     "cached": True,
                     "query_type": "cached",
-                    "retrieval_mode": "cached"
+                    "retrieval_mode": "cached",
+                    "reliability": {
+                        "passed": True,
+                        "verdict": "PASS",
+                        "confidence": 0.9,
+                        "issues": [],
+                        "groundedness_score": 1.0,
+                        "consistency_score": 1.0,
+                        "lookback_ratio": 1.0
+                    }
                 }
         
-        # Stage 0: Query Intent Classification (if available)
+        # ── STAGE 1: Adaptive Query Intent & Planning ──────────────────────────
         query_type = None
         retrieval_mode = None
         if self.query_planner and QUERY_PLANNING_AVAILABLE:
@@ -166,215 +366,250 @@ class RAGPipeline:
             retrieval_mode = query_plan.retrieval_strategy
             logger.info(f"Query classified as: {query_type.value}, retrieval mode: {retrieval_mode}")
         
-        # Stage 1: Retrieval with adaptive mode selection
-        if retrieval_mode and self.adaptive_strategy:
-            # Use adaptive retrieval based on query type
-            retrieved = self._adaptive_retrieve(query, retrieval_mode, query_type)
-        elif query_type == QueryType.MULTI_HOP and self.multi_hop_retriever:
-            # Use multi-hop retrieval for complex queries
-            logger.info("Using multi-hop retrieval for MULTI_HOP query type")
-            retrieved = self.multi_hop_retriever.retrieve(query, k=settings.retrieval.top_k_dense + 5)
-        else:
-            # Standard retrieval
-            retrieved = self.retriever.retrieve(query, k=settings.retrieval.top_k_dense)
-        logger.info(f"Retrieved {len(retrieved)} documents")
+        # ── STAGE 2: Retrieval (Adaptive vs Multi-Hop) ─────────────────────────
+        self.pipeline_tracer.start_stage(PipelineStage.RETRIEVAL)
         
-        # Stage 2: Metadata filtering based on query type
+        if retrieval_mode and self.adaptive_strategy:
+            retrieved = self._adaptive_retrieve(query, retrieval_mode, query_type)
+        elif QUERY_PLANNING_AVAILABLE and query_type == QueryType.MULTI_HOP and self.multi_hop_retriever:
+            logger.info("Using multi-hop retrieval for query")
+            retrieved = self.multi_hop_retriever.retrieve(query, k=settings.retrieval.top_k_dense + 5)
+            trace_stages.append("query_rewriting")
+        else:
+            retrieved = self.retriever.retrieve(query, k=settings.retrieval.top_k_dense)
+            
+        self.pipeline_tracer.end_stage(PipelineStage.RETRIEVAL, {"retrieved_count": len(retrieved)})
+        trace_stages.append("retrieval")
+        
+        # Metadata Filtering
         if query_type and QUERY_PLANNING_AVAILABLE:
             retrieved = self._filter_by_metadata(retrieved, query_type)
-            logger.info(f"After metadata filtering: {len(retrieved)} documents")
-        
-        # Stage 3: Reranking
+            
+        # ── STAGE 3: Reranking ────────────────────────────────────────────────
+        self.pipeline_tracer.start_stage(PipelineStage.RERANKING)
         reranked = self.reranker.rerank(query, retrieved, top_k=settings.retrieval.top_k_final)
-        logger.info(f"Reranked to {len(reranked)} documents")
+        self.pipeline_tracer.end_stage(PipelineStage.RERANKING, {"reranked_count": len(reranked)})
+        trace_stages.append("reranking")
         
-        # Stage 4: Context Refinement
+        # ── STAGE 4: Context Refinement ───────────────────────────────────────
+        self.pipeline_tracer.start_stage(PipelineStage.REFINEMENT)
         refined = self.refiner.refine(reranked)
-        logger.info(f"Refined to {len(refined)} documents")
+        self.pipeline_tracer.end_stage(PipelineStage.REFINEMENT, {"refined_count": len(refined)})
+        trace_stages.append("refinement")
         
-        # Stage 5: Safety Check
-        conflicts = self.safety_checker.check_conflict(refined)
+        # ── STAGE 4.5: System 2 Attention Context Filtering ────────────────────
+        self.pipeline_tracer.start_stage(PipelineStage.QUERY_REWRITING, {"before_s2a": len(refined)})
+        refined = self.reliability_layer.apply_s2a(query, refined)
+        self.pipeline_tracer.end_stage(PipelineStage.QUERY_REWRITING, {"after_s2a": len(refined)})
+        trace_stages.append("query_rewriting")
+        
+        # ── STAGE 4.6: Overshadow Limiter & Token Budgeting ──────────────────
+        refined, overshadow_risk = self.overshadow_limiter.limit_context(refined)
+        
+        # ── STAGE 5: Safety Checks ────────────────────────────────────────────
+        self.pipeline_tracer.start_stage(PipelineStage.VALIDATION)
+        conflicts = self.safety_checker.check_conflict(refined) if self.safety_checker else []
         if conflicts and settings.safety.enable_conflict_detection:
             logger.warning(f"Found {len(conflicts)} conflicting documents")
+            
+        out_of_corpus = self.safety_checker.check_out_of_corpus(query, refined) if self.safety_checker else False
+        self.pipeline_tracer.end_stage(PipelineStage.VALIDATION, {"out_of_corpus": out_of_corpus})
+        trace_stages.append("validation")
         
-        out_of_corpus = self.safety_checker.check_out_of_corpus(query, refined)
         if out_of_corpus and settings.safety.enable_fallback_guard:
             logger.warning("Query may be out of corpus scope")
+            answer = "I don't have enough information in the placement documents to answer this question accurately."
+            self.pipeline_tracer.end_trace(success=False, error_message="Out of corpus")
             return {
-                "answer": "I don't have enough information in the placement documents to answer this question accurately.",
+                "answer": answer,
                 "sources": [],
                 "confidence": 0.0,
                 "out_of_corpus": True,
                 "query_type": query_type.value if query_type else "unknown"
             }
-        
-        # Stage 6: Generation
-        answer = self.generator.generate(query, refined)
-        logger.info("Generated answer")
-        
-        # Stage 7: Update memory (if available)
-        if self.memory_system and MEMORY_AVAILABLE:
-            # Store in semantic cache
-            self.memory_system.semantic_cache.set(query, {
-                "answer": answer,
-                "sources": [{"text": doc.page_content, "metadata": doc.metadata} for doc in refined],
-                "confidence": self._calculate_confidence(refined)
-            })
             
-            # Add to conversation history
+        # ── STAGE 6: Generation (Self-Consistency) ────────────────────────────
+        self.pipeline_tracer.start_stage(PipelineStage.GENERATION)
+        
+        # We execute the self-consistency loop to sample multiple answers and select the best
+        consistency_res = self.reliability_layer.consistency_verifier.verify(query, refined, self.generator)
+        answer = consistency_res["best_answer"]
+        consistency_score = consistency_res.get("consistency_score", 1.0)
+        
+        self.pipeline_tracer.end_stage(PipelineStage.GENERATION, {"answer": answer})
+        trace_stages.append("generation")
+        
+        # ── STAGE 7: Factual Recitation Checking & Reliability Verdict ─────────
+        self.pipeline_tracer.start_stage(PipelineStage.RELIABILITY_CHECK)
+        
+        base_confidence = self._calculate_confidence(refined)
+        reliability_report = self.reliability_layer.check_reliability(
+            query=query,
+            answer=answer,
+            context=refined,
+            confidence=base_confidence,
+            query_type=query_type.value if hasattr(query_type, 'value') else str(query_type) if query_type else "factual",
+            trace_stages=trace_stages,
+            generator=self.generator
+        )
+        
+        self.pipeline_tracer.end_stage(PipelineStage.RELIABILITY_CHECK, {
+            "verdict": reliability_report.verdict,
+            "groundedness": reliability_report.groundedness_score
+        })
+        trace_stages.append("reliability_check")
+        
+        # Handle Failures
+        if reliability_report.fallback_triggered:
+            logger.warning(f"Reliability failure. Triggering fallback. Reason: {reliability_report.fallback_reason}")
+            answer = self.reliability_layer.get_fallback_response(reliability_report.fallback_reason)
+            
+        # Validate and fix inline citations post-generation
+        answer = self._validate_and_fix_citations(answer, refined)
+        
+        # End Trace
+        self.pipeline_tracer.set_query_info(
+            query_type.value if hasattr(query_type, 'value') else str(query_type) if query_type else "unknown",
+            retrieval_mode.value if hasattr(retrieval_mode, 'value') else str(retrieval_mode) if retrieval_mode else "standard"
+        )
+        self.pipeline_tracer.set_final_answer(answer, reliability_report.confidence)
+        self.pipeline_tracer.end_trace(success=reliability_report.passed)
+        
+        # Log analytics
+        latency_ms = (time.time() - start_time) * 1000
+        rerank_scores = [doc.metadata.get("rerank_score", 0.5) for doc in refined]
+        self.retrieval_analytics.track_retrieval(
+            query=query,
+            retrieved_docs=retrieved,
+            reranked_docs=refined,
+            confidence_score=reliability_report.confidence,
+            reranking_scores=rerank_scores,
+            token_usage=sum(len(doc.page_content) // 4 for doc in refined),
+            metadata={
+                "overshadow_risk": overshadow_risk,
+                "latency_ms": latency_ms,
+                "verdict": reliability_report.verdict,
+                "groundedness": reliability_report.groundedness_score,
+                "consistency": reliability_report.consistency_score
+            }
+        )
+        
+        # Update Memory Systems
+        if self.memory_system and MEMORY_AVAILABLE:
+            self.memory_system.semantic_cache.set(query, answer, {
+                "confidence": reliability_report.confidence,
+                "sources": [{"text": doc.page_content, "metadata": doc.metadata} for doc in refined]
+            })
             self.memory_system.conversation_memory.add_turn(query, answer)
             
-            logger.info("Updated memory with query-answer pair")
-        
-        # Stage 8: Return results
         return {
             "answer": answer,
             "sources": [
-                {
-                    "text": doc.page_content,
-                    "metadata": doc.metadata
-                }
+                {"text": doc.page_content, "metadata": doc.metadata}
                 for doc in refined
             ],
-            "confidence": self._calculate_confidence(refined),
+            "confidence": reliability_report.confidence,
             "conflicts": len(conflicts) if conflicts else 0,
             "query_type": query_type.value if hasattr(query_type, 'value') else str(query_type) if query_type else "unknown",
             "retrieval_mode": retrieval_mode.value if hasattr(retrieval_mode, 'value') else str(retrieval_mode) if retrieval_mode else "standard",
-            "cached": False
+            "cached": False,
+            "reliability": {
+                "passed": reliability_report.passed,
+                "verdict": reliability_report.verdict,
+                "confidence": reliability_report.confidence,
+                "issues": reliability_report.issues,
+                "groundedness_score": reliability_report.groundedness_score,
+                "consistency_score": reliability_report.consistency_score,
+                "overshadow_risk": overshadow_risk,
+                "lookback_ratio": reliability_report.lookback_ratio
+            }
         }
+        
+    def _validate_and_fix_citations(self, answer: str, context: List[Document]) -> str:
+        """Validate all [Source X] citations in the answer against context bounds, correcting mismatches."""
+        if not context:
+            return re.sub(r'\[Source \d+\]', '', answer)
+            
+        citations = re.findall(r'\[Source (\d+)\]', answer)
+        fixed_answer = answer
+        
+        for cit_str in set(citations):
+            idx = int(cit_str)
+            if idx < 1 or idx > len(context):
+                # We have an invalid source reference! Match sentence to find closest context document
+                sentences = re.split(r'[.!?]', fixed_answer)
+                for sentence in sentences:
+                    if f"[Source {cit_str}]" in sentence:
+                        best_match_idx = 0
+                        best_overlap = -1
+                        sentence_words = set(sentence.lower().split())
+                        for doc_idx, doc in enumerate(context):
+                            doc_words = set(doc.page_content.lower().split())
+                            overlap = len(sentence_words & doc_words)
+                            if overlap > best_overlap:
+                                best_overlap = overlap
+                                best_match_idx = doc_idx
+                        # Correct citation
+                        fixed_answer = fixed_answer.replace(f"[Source {cit_str}]", f"[Source {best_match_idx + 1}]")
+                        break
+        return fixed_answer
     
     def _adaptive_retrieve(self, query: str, retrieval_mode, query_type) -> List[Document]:
-        """Perform adaptive retrieval based on query type and mode with multi-hop support.
-        
-        Args:
-            query: User query
-            retrieval_mode: Retrieval mode to use (string or enum)
-            query_type: Query type for context
-            
-        Returns:
-            Retrieved documents
-        """
-        # Convert to string if it's an enum
+        """Perform adaptive retrieval."""
         mode_str = retrieval_mode.value if hasattr(retrieval_mode, 'value') else str(retrieval_mode)
         
-        # Adjust retrieval parameters based on mode
         if mode_str == "semantic_heavy":
-            # Increase semantic retrieval, decrease keyword
             k = settings.retrieval.top_k_dense + 5
             retrieved = self.retriever.retrieve(query, k=k)
         elif mode_str == "keyword_heavy":
-            # Increase keyword retrieval
             k = settings.retrieval.top_k_dense
             retrieved = self.retriever.retrieve(query, k=k)
         elif mode_str == "metadata_first":
-            # Prioritize metadata filtering
             k = settings.retrieval.top_k_dense + 10
             retrieved = self.retriever.retrieve(query, k=k)
-        elif mode_str == "multi_hop" and self.multi_hop_retriever:
-            # Use multi-hop retrieval
+        elif QUERY_PLANNING_AVAILABLE and mode_str == "multi_hop" and self.multi_hop_retriever:
             logger.info("Using multi-hop retrieval for multi_hop retrieval mode")
             retrieved = self.multi_hop_retriever.retrieve(query, k=settings.retrieval.top_k_dense + 5)
         else:
-            # Balanced hybrid
             retrieved = self.retriever.retrieve(query, k=settings.retrieval.top_k_dense)
         
         return retrieved
     
-    def _filter_by_metadata(self, documents: List[Document], query_type: QueryType) -> List[Document]:
-        """Filter documents by metadata based on query type with enhanced type mapping.
-        
-        Args:
-            documents: Retrieved documents
-            query_type: Query type for filtering
-            
-        Returns:
-            Filtered documents
-        """
+    def _filter_by_metadata(self, documents: List[Document], query_type) -> List[Document]:
+        """Filter documents by metadata based on query type."""
         filtered = []
+        
+        if not QUERY_PLANNING_AVAILABLE or query_type is None:
+            return documents
         
         for doc in documents:
             metadata = doc.metadata
             
-            # Filter based on query type with enhanced type mapping
             if query_type == QueryType.ELIGIBILITY:
-                # Prioritize eligibility-related chunks
                 if metadata.get("type") in ["eligibility", "requirements", "criteria", "qualification"]:
                     filtered.append(doc)
             elif query_type == QueryType.INTERNSHIP:
-                # Prioritize internship-related chunks
                 if metadata.get("type") in ["internship", "placement", "offers", "stipend"]:
                     filtered.append(doc)
             elif query_type == QueryType.STATISTICS:
-                # Prioritize statistics-related chunks
                 if metadata.get("type") in ["statistics", "package", "salary", "data", "compensation"]:
                     filtered.append(doc)
             elif query_type == QueryType.INTERVIEW:
-                # Prioritize interview-related chunks
                 if metadata.get("type") in ["interview", "experience", "process", "round", "technical", "hr"]:
                     filtered.append(doc)
             elif query_type == QueryType.PLACEMENT_TREND:
-                # Prioritize trend-related chunks
                 if metadata.get("type") in ["statistics", "trend", "data", "year", "annual"]:
                     filtered.append(doc)
             else:
-                # No specific filtering for other types
                 filtered.append(doc)
         
-        # If filtering removed all documents, return original
         if not filtered:
-            logger.warning(f"Metadata filtering removed all documents for type {query_type.value}, returning original")
             return documents
-        
-        logger.info(f"Metadata filtering: {len(documents)} -> {len(filtered)} documents for type {query_type.value}")
+            
         return filtered
     
     def _calculate_confidence(self, documents: List[Document]) -> float:
-        """Calculate confidence score based on retrieved documents.
-        
-        Args:
-            documents: Retrieved documents
-            
-        Returns:
-            Confidence score between 0 and 1
-        """
+        """Calculate confidence score based on retrieved documents."""
         if not documents:
             return 0.0
-        
-        # Simple confidence based on number of relevant documents
         return min(len(documents) / settings.retrieval.top_k_final, 1.0)
-
-
-class ToolRouter:
-    """Router for tool-augmented agent capabilities."""
-    
-    def __init__(self):
-        """Initialize tool router with available tools."""
-        self.tools = {}
-        logger.info("Tool Router initialized")
-    
-    def register_tool(self, name: str, tool: Any) -> None:
-        """Register a tool with the router.
-        
-        Args:
-            name: Tool name
-            tool: Tool instance
-        """
-        self.tools[name] = tool
-        logger.info(f"Registered tool: {name}")
-    
-    def dispatch(self, query: str) -> Optional[Any]:
-        """Dispatch query to appropriate tool.
-        
-        Args:
-            query: User query
-            
-        Returns:
-            Tool result or None if no tool matches
-        """
-        # Simple keyword-based routing
-        for name, tool in self.tools.items():
-            if name.lower() in query.lower():
-                logger.info(f"Dispatching to tool: {name}")
-                return tool.execute(query)
-        
-        return None
