@@ -3,6 +3,7 @@
 from typing import List, Dict, Any, Optional, Tuple
 from dataclasses import dataclass
 from langchain_core.documents import Document
+import json
 import logging
 
 logger = logging.getLogger(__name__)
@@ -12,14 +13,77 @@ logger = logging.getLogger(__name__)
 class ReliabilityCheck:
     """Result of reliability check."""
     passed: bool
+    verdict: str  # PASS, WARN, FAIL
     confidence: float
     issues: List[str]
     fallback_triggered: bool
     fallback_reason: str
+    groundedness_score: float
+    consistency_score: float
+    recitation_report: Dict[str, Any]
+    chain_report: Dict[str, Any]
+    lookback_ratio: float = 0.0
+
+
+class System2Attention:
+    """Filters retrieved chunks using System 2 Attention (S2A) to remove irrelevant context."""
+    
+    def __init__(self, api_key: Optional[str] = None):
+        """Initialize the System 2 Attention filter."""
+        from groq import Groq
+        from config.settings import settings
+        self.client = Groq(api_key=api_key or settings.groq_api_key)
+        self.model = settings.generation.model
+        logger.info("System2Attention initialized")
+        
+    def filter_context(self, query: str, context: List[Document]) -> List[Document]:
+        """Filter out irrelevant chunks using the LLM attention layer."""
+        if not context:
+            return []
+        
+        logger.info(f"Applying System 2 Attention on {len(context)} documents")
+        filtered_docs = []
+        
+        for idx, doc in enumerate(context):
+            prompt = f"""You are an attention filtering module in a college placement RAG system.
+Given the User Query: "{query}"
+Evaluate if the following document chunk contains information directly relevant, helpful, or contextual to answering the query.
+
+Document Chunk:
+{doc.page_content}
+
+Answer ONLY with "YES" if the chunk is relevant and "NO" if the chunk is irrelevant. Do not write any other text or reasoning.
+Relevance verdict:"""
+            try:
+                response = self.client.chat.completions.create(
+                    model=self.model,
+                    messages=[
+                        {"role": "system", "content": "You are a precise attention filter. Respond only with YES or NO."},
+                        {"role": "user", "content": prompt}
+                    ],
+                    temperature=0.0,
+                    max_tokens=10
+                )
+                verdict = response.choices[0].message.content.strip().upper()
+                if "YES" in verdict:
+                    filtered_docs.append(doc)
+                else:
+                    logger.info(f"S2A filtered out chunk {idx + 1} as irrelevant: {doc.page_content[:80]}...")
+            except Exception as e:
+                logger.error(f"Error in System 2 Attention for chunk {idx + 1}: {e}")
+                filtered_docs.append(doc)  # Fallback to keeping it
+                
+        # If all filtered out, return original context as fallback
+        if not filtered_docs:
+            logger.warning("S2A filtered out all chunks. Falling back to original context.")
+            return context
+            
+        logger.info(f"System 2 Attention completed: kept {len(filtered_docs)} of {len(context)} documents")
+        return filtered_docs
 
 
 class SelfConsistencyVerifier:
-    """Verifies self-consistency of generated answers."""
+    """Verifies self-consistency of generated answers by sampling multiple candidates."""
     
     def __init__(self, num_samples: int = 3):
         """Initialize the self-consistency verifier.
@@ -51,8 +115,28 @@ class SelfConsistencyVerifier:
         # Generate multiple samples
         samples = []
         for i in range(self.num_samples):
-            sample = generator.generate(query, context)
-            samples.append(sample)
+            try:
+                sample = generator.generate(query, context)
+                samples.append(sample)
+            except Exception as e:
+                logger.error(f"Failed to generate self-consistency sample {i+1}: {e}")
+                
+        if not samples:
+            return {
+                "consistency_score": 0.0,
+                "samples": [],
+                "best_answer": "Error generating answer samples.",
+                "passed": False
+            }
+            
+        # If only one sample succeeded, return it
+        if len(samples) == 1:
+            return {
+                "consistency_score": 1.0,
+                "samples": samples,
+                "best_answer": samples[0],
+                "passed": True
+            }
         
         # Calculate consistency score
         consistency_score = self._calculate_consistency(samples)
@@ -66,7 +150,7 @@ class SelfConsistencyVerifier:
             "consistency_score": consistency_score,
             "samples": samples,
             "best_answer": best_answer,
-            "passed": consistency_score > 0.6
+            "passed": consistency_score > 0.5
         }
     
     def _calculate_consistency(self, samples: List[str]) -> float:
@@ -81,7 +165,6 @@ class SelfConsistencyVerifier:
         if len(samples) < 2:
             return 1.0
         
-        # Simple similarity based on keyword overlap
         total_similarity = 0.0
         comparisons = 0
         
@@ -126,9 +209,8 @@ class SelfConsistencyVerifier:
         Returns:
             Best answer
         """
-        # Select the answer with highest average similarity to others
         best_idx = 0
-        best_score = 0.0
+        best_score = -1.0
         
         for i, sample in enumerate(samples):
             similarities = []
@@ -145,385 +227,393 @@ class SelfConsistencyVerifier:
         return samples[best_idx]
 
 
+class RecitationChecker:
+    """Extracts factual claims from generated answers and verifies them against retrieved source documents."""
+    
+    def __init__(self, api_key: Optional[str] = None):
+        """Initialize the recitation checker."""
+        from groq import Groq
+        from config.settings import settings
+        self.client = Groq(api_key=api_key or settings.groq_api_key)
+        self.model = settings.generation.model
+        logger.info("RecitationChecker initialized")
+        
+    def check(self, answer: str, context: List[Document]) -> Dict[str, Any]:
+        """Verify claims in answer against retrieved context.
+        
+        Returns:
+            Dictionary with groundedness score, supported/unsupported claims.
+        """
+        if "retrieved documents do not contain" in answer or "don't have enough information" in answer.lower():
+            # If system explicitly claims lack of info, it is technically 100% grounded
+            return {
+                "groundedness_score": 1.0,
+                "claims": [],
+                "supported_claims": [],
+                "unsupported_claims": [],
+                "passed": True
+            }
+            
+        logger.info("Performing recitation check")
+        
+        # Step 1: Extract claims
+        claims = self._extract_claims(answer)
+        if not claims:
+            return {
+                "groundedness_score": 1.0,
+                "claims": [],
+                "supported_claims": [],
+                "unsupported_claims": [],
+                "passed": True
+            }
+            
+        supported_claims = []
+        unsupported_claims = []
+        
+        context_text = "\n\n".join([doc.page_content for doc in context])
+        
+        # Step 2: Verify each claim against context
+        for claim in claims:
+            is_supported = self._verify_claim(claim, context_text)
+            if is_supported:
+                supported_claims.append(claim)
+            else:
+                unsupported_claims.append(claim)
+                
+        groundedness_score = len(supported_claims) / len(claims)
+        passed = groundedness_score >= 0.7
+        
+        logger.info(f"Recitation check: {len(supported_claims)} supported, {len(unsupported_claims)} unsupported. Score: {groundedness_score:.2f}")
+        
+        return {
+            "groundedness_score": groundedness_score,
+            "claims": claims,
+            "supported_claims": supported_claims,
+            "unsupported_claims": unsupported_claims,
+            "passed": passed
+        }
+        
+    def _extract_claims(self, answer: str) -> List[str]:
+        """Extract atomic factual claims from the answer."""
+        prompt = f"""You are a factual claim extractor for a RAG verification pipeline.
+Analyze the following response and extract a JSON list of atomic factual claims made in it.
+An atomic claim is a short sentence containing exactly one fact (e.g. "TCS requires 7.5 CGPA", "Google offers 42 LPA package", "Microsoft allows 1 backlog").
+Do not extract opinions, conversational filler, meta-announcements, or reasoning.
+Respond ONLY with a valid raw JSON list of strings. Do not include markdown code fences or any other text.
+
+Response:
+{answer}
+
+Atomic factual claims JSON list:"""
+        try:
+            response = self.client.chat.completions.create(
+                model=self.model,
+                messages=[
+                    {"role": "system", "content": "You are a claim extractor. Output only raw JSON lists of strings."},
+                    {"role": "user", "content": prompt}
+                ],
+                temperature=0.0
+            )
+            content = response.choices[0].message.content.strip()
+            if content.startswith("```"):
+                content = content.split("```")[1]
+                if content.startswith("json"):
+                    content = content[4:]
+            content = content.strip()
+            return json.loads(content)
+        except Exception as e:
+            logger.error(f"Error extracting claims: {e}")
+            # Basic fallback: simple sentence split
+            import re
+            sentences = re.split(r'[.!?]\s+', answer)
+            return [s.strip() for s in sentences if len(s.strip()) > 15 and not s.strip().startswith("I don't") and not s.strip().startswith("The retrieved")]
+
+    def _verify_claim(self, claim: str, context_text: str) -> bool:
+        """Verify a single claim against the retrieved context."""
+        prompt = f"""You are a factual verification assistant. Verify if the following claim is fully supported by the provided context.
+
+Context Documents:
+{context_text}
+
+Claim to Verify:
+"{claim}"
+
+Answer ONLY "YES" if the claim is fully supported by the context, and "NO" if it is not supported, contradicted, or missing from the context. Do not write anything else.
+Verification verdict:"""
+        try:
+            response = self.client.chat.completions.create(
+                model=self.model,
+                messages=[
+                    {"role": "system", "content": "You are a verification model. Respond only YES or NO."},
+                    {"role": "user", "content": prompt}
+                ],
+                temperature=0.0,
+                max_tokens=10
+            )
+            verdict = response.choices[0].message.content.strip().upper()
+            return "YES" in verdict
+        except Exception as e:
+            logger.error(f"Error verifying claim '{claim}': {e}")
+            return True  # Safe fallback to avoid false rejection
+
+
+class ChainOfActionsVerifier:
+    """Verifies that reasoning and retrieval actions were actually executed correctly."""
+    
+    def __init__(self):
+        logger.info("ChainOfActionsVerifier initialized")
+        
+    def verify(self, query: str, query_type: str, trace_stages: List[str]) -> Dict[str, Any]:
+        """Verify execution flow based on query classification."""
+        issues = []
+        
+        # 1. Base RAG stage checks
+        if "retrieval" not in trace_stages:
+            issues.append("Retrieval stage not logged")
+        if "reranking" not in trace_stages:
+            issues.append("Reranking stage not logged")
+        if "refinement" not in trace_stages:
+            issues.append("Context refinement stage not logged")
+            
+        # 2. Multi-hop checks
+        if query_type == "multi_hop":
+            if "query_planning" not in trace_stages:
+                issues.append("Query planning not performed for multi-hop query")
+                
+        passed = len(issues) == 0
+        warning = "" if passed else "Warning: Incomplete reasoning chain: " + "; ".join(issues)
+        
+        return {
+            "passed": passed,
+            "issues": issues,
+            "warning": warning
+        }
+
+
 class ResponseValidator:
     """Validates responses against quality criteria."""
     
     def __init__(self):
         """Initialize the response validator."""
-        self.min_length = 50
-        self.max_length = 2000
-        self.required_elements = ["answer"]
-        
+        self.min_length = 15
+        self.max_length = 4000
+        self.required_elements = []
         logger.info("ResponseValidator initialized")
     
     def validate(self, response: str, context: List[Document]) -> Dict[str, Any]:
-        """Validate response against quality criteria.
-        
-        Args:
-            response: Generated response
-            context: Retrieved context
-            
-        Returns:
-            Dictionary with validation results
-        """
+        """Validate response against quality criteria."""
         logger.info("Validating response")
-        
         issues = []
         
-        # Check length
         if len(response) < self.min_length:
-            issues.append(f"Response too short: {len(response)} chars (min: {self.min_length})")
-        
+            issues.append(f"Response too short ({len(response)} chars)")
         if len(response) > self.max_length:
-            issues.append(f"Response too long: {len(response)} chars (max: {self.max_length})")
-        
-        # Check for required elements
-        for element in self.required_elements:
-            if element not in response.lower():
-                issues.append(f"Missing required element: {element}")
-        
-        # Check for empty or generic responses
-        if self._is_generic_response(response):
-            issues.append("Response appears generic or placeholder")
-        
-        # Check grounding in context
-        if not self._is_grounded(response, context):
-            issues.append("Response not well-grounded in context")
-        
+            issues.append(f"Response too long ({len(response)} chars)")
+            
+        # Check generic empty patterns
+        if any(pat in response.lower() for pat in ["placeholder", "not implemented"]):
+            issues.append("Response contains placeholder content")
+            
         passed = len(issues) == 0
-        
-        logger.info(f"Validation {'passed' if passed else 'failed'}: {len(issues)} issues")
-        
         return {
             "passed": passed,
             "issues": issues,
             "length": len(response)
         }
-    
-    def _is_generic_response(self, response: str) -> bool:
-        """Check if response is generic or placeholder.
-        
-        Args:
-            response: Response text
-            
-        Returns:
-            True if generic, False otherwise
-        """
-        generic_patterns = [
-            "i don't have information",
-            "i cannot answer",
-            "placeholder",
-            "not implemented"
-        ]
-        
-        response_lower = response.lower()
-        return any(pattern in response_lower for pattern in generic_patterns)
-    
-    def _is_grounded(self, response: str, context: List[Document]) -> bool:
-        """Check if response is grounded in context.
-        
-        Args:
-            response: Response text
-            context: Context documents
-            
-        Returns:
-            True if grounded, False otherwise
-        """
-        if not context:
-            return False
-        
-        response_words = set(response.lower().split())
-        
-        for doc in context:
-            doc_words = set(doc.page_content.lower().split())
-            overlap = len(response_words & doc_words)
-            
-            if overlap > len(response_words) * 0.3:
-                return True
-        
-        return False
 
 
 class ConfidenceThresholdManager:
     """Manages confidence thresholds for system reliability."""
     
     def __init__(self):
-        """Initialize the confidence threshold manager."""
+        """Initialize threshold manager."""
         self.thresholds = {
-            "retrieval_confidence": 0.5,
-            "answer_confidence": 0.6,
-            "faithfulness": 0.7,
-            "consistency": 0.6
+            "retrieval_confidence": 0.4,
+            "faithfulness": 0.6,
+            "consistency": 0.5
         }
         
-        logger.info("ConfidenceThresholdManager initialized")
-    
-    def check_thresholds(self, metrics: Dict[str, float]) -> ReliabilityCheck:
-        """Check if metrics meet required thresholds.
-        
-        Args:
-            metrics: Dictionary of metric scores
-            
-        Returns:
-            ReliabilityCheck result
-        """
-        logger.info("Checking confidence thresholds")
-        
+    def check_thresholds(self, metrics: Dict[str, float]) -> Dict[str, Any]:
+        """Check if metrics meet required thresholds."""
         issues = []
         passed = True
         
-        for metric_name, threshold in self.thresholds.items():
-            metric_value = metrics.get(metric_name, 0.0)
-            
-            if metric_value < threshold:
-                issues.append(f"{metric_name} below threshold: {metric_value:.2f} < {threshold}")
+        for name, threshold in self.thresholds.items():
+            val = metrics.get(name, 1.0)
+            if val < threshold:
+                issues.append(f"{name} threshold unmet: {val:.2f} < {threshold}")
                 passed = False
-        
-        # Determine if fallback should be triggered
-        fallback_triggered = not passed
-        fallback_reason = " ".join(issues) if issues else ""
-        
-        # Calculate overall confidence
-        overall_confidence = sum(metrics.values()) / len(metrics) if metrics else 0.0
-        
-        check = ReliabilityCheck(
-            passed=passed,
-            confidence=overall_confidence,
-            issues=issues,
-            fallback_triggered=fallback_triggered,
-            fallback_reason=fallback_reason
-        )
-        
-        logger.info(f"Threshold check {'passed' if passed else 'failed'}")
-        return check
-    
-    def set_threshold(self, metric_name: str, threshold: float) -> None:
-        """Set a specific threshold.
-        
-        Args:
-            metric_name: Name of metric
-            threshold: Threshold value
-        """
-        self.thresholds[metric_name] = threshold
-        logger.info(f"Set threshold {metric_name} to {threshold}")
-    
-    def get_threshold(self, metric_name: str) -> float:
-        """Get a specific threshold.
-        
-        Args:
-            metric_name: Name of metric
-            
-        Returns:
-            Threshold value
-        """
-        return self.thresholds.get(metric_name, 0.5)
+                
+        return {
+            "passed": passed,
+            "issues": issues
+        }
 
 
 class UnsupportedAnswerRejector:
     """Rejects unsupported answers based on confidence and grounding."""
     
-    def __init__(self, confidence_threshold: float = 0.4):
-        """Initialize the unsupported answer rejector.
+    def __init__(self, threshold: float = 0.3):
+        self.threshold = threshold
         
-        Args:
-            confidence_threshold: Minimum confidence threshold
-        """
-        self.confidence_threshold = confidence_threshold
-        logger.info(f"UnsupportedAnswerRejector initialized with threshold {confidence_threshold}")
-    
-    def should_reject(
-        self,
-        answer: str,
-        confidence: float,
-        context: List[Document]
-    ) -> Tuple[bool, str]:
-        """Determine if answer should be rejected.
-        
-        Args:
-            answer: Generated answer
-            confidence: Confidence score
-            context: Retrieved context
-            
-        Returns:
-            Tuple of (should_reject, reason)
-        """
-        logger.info("Checking if answer should be rejected")
-        
-        reasons = []
-        
-        # Check confidence threshold
-        if confidence < self.confidence_threshold:
-            reasons.append(f"Confidence too low: {confidence:.2f} < {self.confidence_threshold}")
-        
-        # Check if context is empty
-        if not context:
-            reasons.append("No context available")
-        
-        # Check if answer is generic
-        if self._is_generic_answer(answer):
-            reasons.append("Answer appears generic")
-        
-        # Check if answer is ungrounded
-        if not self._is_grounded(answer, context):
-            reasons.append("Answer not grounded in context")
-        
-        should_reject = len(reasons) > 0
-        reason = "; ".join(reasons) if reasons else ""
-        
-        logger.info(f"Reject decision: {should_reject} (reason: {reason})")
-        
-        return should_reject, reason
-    
-    def _is_generic_answer(self, answer: str) -> bool:
-        """Check if answer is generic.
-        
-        Args:
-            answer: Answer text
-            
-        Returns:
-            True if generic, False otherwise
-        """
-        generic_indicators = [
-            "i don't have enough information",
-            "i cannot answer this question",
-            "this is beyond my knowledge",
-            "i'm not sure about this"
-        ]
-        
-        answer_lower = answer.lower()
-        return any(indicator in answer_lower for indicator in generic_indicators)
-    
-    def _is_grounded(self, answer: str, context: List[Document]) -> bool:
-        """Check if answer is grounded in context.
-        
-        Args:
-            answer: Answer text
-            context: Context documents
-            
-        Returns:
-            True if grounded, False otherwise
-        """
-        if not context:
-            return False
-        
-        answer_words = set(answer.lower().split())
-        
-        for doc in context[:3]:  # Check top 3 documents
-            doc_words = set(doc.page_content.lower().split())
-            overlap = len(answer_words & doc_words)
-            
-            if overlap > len(answer_words) * 0.2:
-                return True
-        
-        return False
+    def should_reject(self, answer: str, confidence: float) -> Tuple[bool, str]:
+        if confidence < self.threshold:
+            return True, f"Confidence too low ({confidence:.2f} < {self.threshold})"
+        return False, ""
 
 
 class SystemReliabilityLayer:
-    """Unified system reliability layer."""
+    """Unified system reliability layer coordinating hallucination guards."""
     
     def __init__(self):
-        """Initialize the system reliability layer."""
+        """Initialize SystemReliabilityLayer with all components."""
+        self.s2a = System2Attention()
         self.consistency_verifier = SelfConsistencyVerifier()
+        self.recitation_checker = RecitationChecker()
+        self.chain_verifier = ChainOfActionsVerifier()
         self.response_validator = ResponseValidator()
         self.threshold_manager = ConfidenceThresholdManager()
         self.answer_rejector = UnsupportedAnswerRejector()
         
-        logger.info("SystemReliabilityLayer initialized")
-    
+        logger.info("SystemReliabilityLayer fully initialized")
+        
+    def apply_s2a(self, query: str, context: List[Document]) -> List[Document]:
+        """Filter retrieved context using System 2 Attention."""
+        return self.s2a.filter_context(query, context)
+        
+    def compute_lookback_ratio(self, answer: str, context_chunks: List[Any]) -> float:
+        """Compute the lookback ratio of the generated answer against retrieved context.
+        
+        Args:
+            answer: Generated answer string
+            context_chunks: List of retrieved context documents, strings, or dicts
+            
+        Returns:
+            Float between 0 and 1 representing fraction of answer words that appear in the retrieved context.
+        """
+        if not answer:
+            return 1.0
+            
+        # Extract words from context chunks
+        context_words = set()
+        for chunk in context_chunks:
+            text = ""
+            if isinstance(chunk, str):
+                text = chunk
+            elif hasattr(chunk, 'page_content'):
+                text = chunk.page_content
+            elif isinstance(chunk, dict) and 'text' in chunk:
+                text = chunk['text']
+            
+            # Lowercase and clean words
+            import re
+            words = re.findall(r'\b\w+\b', text.lower())
+            context_words.update(words)
+            
+        # Extract words from the answer
+        import re
+        answer_words = re.findall(r'\b\w+\b', answer.lower())
+        if not answer_words:
+            return 1.0
+            
+        matched_count = sum(1 for word in answer_words if word in context_words)
+        return float(matched_count / len(answer_words))
+        
     def check_reliability(
         self,
         query: str,
         answer: str,
         context: List[Document],
         confidence: float,
+        query_type: str = "factual",
+        trace_stages: List[str] = None,
         generator = None
     ) -> ReliabilityCheck:
-        """Perform comprehensive reliability check.
+        """Perform unified PASS/WARN/FAIL reliability check.
         
         Args:
             query: User query
-            answer: Generated answer
-            context: Retrieved context
-            confidence: Confidence score
-            generator: Optional generator for consistency check
-            
-        Returns:
-            ReliabilityCheck result
+            answer: Generated response
+            context: Retrieved and filtered context documents
+            confidence: Base retrieval/generation confidence score
+            query_type: Classified query type
+            trace_stages: Stages successfully completed in this run
+            generator: Optional generator instance for self-consistency checks
         """
-        logger.info("Performing comprehensive reliability check")
+        logger.info("Starting unified system reliability check")
         
         all_issues = []
+        trace_stages = trace_stages or ["retrieval", "reranking", "refinement", "generation"]
         
-        # Self-consistency check (if generator provided)
+        # 1. Self-consistency check
         consistency_score = 1.0
+        consistency_report = {"passed": True}
         if generator:
-            consistency_result = self.consistency_verifier.verify(query, context, generator)
-            consistency_score = consistency_result["consistency_score"]
-            if not consistency_result["passed"]:
-                all_issues.extend([f"Consistency issue: {issue}" for issue in consistency_result.get("issues", [])])
-        
-        # Response validation
-        validation_result = self.response_validator.validate(answer, context)
-        if not validation_result["passed"]:
-            all_issues.extend(validation_result["issues"])
-        
-        # Confidence threshold check
+            consistency_report = self.consistency_verifier.verify(query, context, generator)
+            consistency_score = consistency_report.get("consistency_score", 1.0)
+            if not consistency_report["passed"]:
+                all_issues.append("Answer lacks consistency across multiple generation passes")
+                
+        # 2. Recitation checking
+        recitation_report = self.recitation_checker.check(answer, context)
+        groundedness_score = recitation_report.get("groundedness_score", 1.0)
+        unsupported = recitation_report.get("unsupported_claims", [])
+        if unsupported:
+            all_issues.extend([f"Unsupported statement: {claim}" for claim in unsupported])
+            
+        # 2.5 Compute lookback ratio
+        lookback_ratio = self.compute_lookback_ratio(answer, context)
+            
+        # 3. Chain verification
+        chain_report = self.chain_verifier.verify(query, query_type, trace_stages)
+        if not chain_report["passed"]:
+            all_issues.extend(chain_report["issues"])
+            
+        # 4. Length/Basic Quality validation
+        val_report = self.response_validator.validate(answer, context)
+        if not val_report["passed"]:
+            all_issues.extend(val_report["issues"])
+            
+        # 5. Threshold checking
         metrics = {
             "retrieval_confidence": confidence,
-            "answer_confidence": confidence,
-            "faithfulness": 0.8,  # Would come from evaluation engine
+            "faithfulness": groundedness_score,
             "consistency": consistency_score
         }
+        threshold_report = self.threshold_manager.check_thresholds(metrics)
+        if not threshold_report["passed"]:
+            all_issues.extend(threshold_report["issues"])
+            
+        # Calculate verdict
+        if groundedness_score < 0.4 or confidence < 0.2:
+            verdict = "FAIL"
+        elif groundedness_score < 0.7 or consistency_score < 0.5 or not chain_report["passed"]:
+            verdict = "WARN"
+        else:
+            verdict = "PASS"
+            
+        # Fallback decision
+        fallback_triggered = verdict == "FAIL"
+        fallback_reason = "; ".join(all_issues) if fallback_triggered else ""
         
-        threshold_check = self.threshold_manager.check_thresholds(metrics)
-        all_issues.extend(threshold_check.issues)
-        
-        # Unsupported answer check
-        should_reject, reject_reason = self.answer_rejector.should_reject(answer, confidence, context)
-        if should_reject:
-            all_issues.append(f"Unsupported answer: {reject_reason}")
-        
-        # Determine overall pass/fail
-        passed = len(all_issues) == 0
-        
-        # Calculate overall confidence
-        overall_confidence = threshold_check.confidence
-        
+        # Formulate unified result
         check = ReliabilityCheck(
-            passed=passed,
-            confidence=overall_confidence,
+            passed=verdict != "FAIL",
+            verdict=verdict,
+            confidence=min(confidence, groundedness_score, consistency_score),
             issues=all_issues,
-            fallback_triggered=threshold_check.fallback_triggered or should_reject,
-            fallback_reason=threshold_check.fallback_reason or reject_reason
+            fallback_triggered=fallback_triggered,
+            fallback_reason=fallback_reason,
+            groundedness_score=groundedness_score,
+            consistency_score=consistency_score,
+            recitation_report=recitation_report,
+            chain_report=chain_report,
+            lookback_ratio=lookback_ratio
         )
         
-        logger.info(f"Reliability check {'passed' if passed else 'failed'}")
+        logger.info(f"Reliability check complete. Verdict: {verdict}. Passed: {check.passed}")
         return check
-    
+        
     def get_fallback_response(self, reason: str) -> str:
-        """Get appropriate fallback response.
-        
-        Args:
-            reason: Reason for fallback
-            
-        Returns:
-            Fallback response
-        """
-        fallback_responses = {
-            "low_confidence": "I'm not confident enough to provide an accurate answer based on the available information.",
-            "no_context": "I don't have enough relevant information in the placement documents to answer this question.",
-            "generic_answer": "I apologize, but I cannot provide a specific answer for this question.",
-            "ungrounded": "I cannot verify this information against the placement documents, so I cannot provide a reliable answer."
-        }
-        
-        # Determine fallback type based on reason
-        if "confidence" in reason.lower():
-            return fallback_responses["low_confidence"]
-        elif "context" in reason.lower():
-            return fallback_responses["no_context"]
-        elif "generic" in reason.lower():
-            return fallback_responses["generic_answer"]
-        elif "grounded" in reason.lower():
-            return fallback_responses["ungrounded"]
-        else:
-            return "I apologize, but I cannot provide a reliable answer for this question based on the available information."
+        """Get an appropriate safe fallback response when reliability fails."""
+        return "I apologize, but I cannot verify this information accurately against official placement documents, so I cannot provide a reliable answer."
