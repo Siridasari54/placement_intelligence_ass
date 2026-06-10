@@ -1,0 +1,118 @@
+{
+  "trace_id": "trace_20260602_203702_667667",
+  "query": "what are the repeated question asked in amazon",
+  "start_time": "2026-06-02T20:37:02.667757",
+  "end_time": "2026-06-02T20:37:27.716528",
+  "total_duration_ms": 25048.770999999997,
+  "query_type": "factual",
+  "retrieval_strategy": "semantic_heavy",
+  "final_answer": "Unfortunately, the provided context does not contain information about the repeated questions asked in Amazon. \n\nHowever, it does mention that the original dataset contains each interview experience repeated 3\u00d7 per company [Source 1]. This suggests that the interview experiences for each company are duplicated, but it does not specify what the repeated questions are.\n\nTherefore, I cannot provide a specific answer to this question based on the provided context.",
+  "confidence_score": 0.39976474017321784,
+  "success": true,
+  "error_message": "",
+  "metadata": {},
+  "stages": [
+    {
+      "stage": "query_planning",
+      "start_time": "2026-06-02T20:37:02.667894",
+      "end_time": "2026-06-02T20:37:02.991934",
+      "duration_ms": 324.04,
+      "input_data": {
+        "query": "what are the repeated question asked in amazon"
+      },
+      "output_data": {
+        "routed_to_tool": false
+      },
+      "success": true,
+      "error_message": ""
+    },
+    {
+      "stage": "retrieval",
+      "start_time": "2026-06-02T20:37:03.047811",
+      "end_time": "2026-06-02T20:37:03.079231",
+      "duration_ms": 31.419999999999998,
+      "input_data": {},
+      "output_data": {
+        "retrieved_count": 25
+      },
+      "success": true,
+      "error_message": ""
+    },
+    {
+      "stage": "reranking",
+      "start_time": "2026-06-02T20:37:03.079332",
+      "end_time": "2026-06-02T20:37:03.079439",
+      "duration_ms": 0.107,
+      "input_data": {},
+      "output_data": {
+        "reranked_count": 5
+      },
+      "success": true,
+      "error_message": ""
+    },
+    {
+      "stage": "refinement",
+      "start_time": "2026-06-02T20:37:03.079464",
+      "end_time": "2026-06-02T20:37:03.079540",
+      "duration_ms": 0.076,
+      "input_data": {},
+      "output_data": {
+        "refined_count": 5
+      },
+      "success": true,
+      "error_message": ""
+    },
+    {
+      "stage": "query_rewriting",
+      "start_time": "2026-06-02T20:37:03.079564",
+      "end_time": "2026-06-02T20:37:04.074841",
+      "duration_ms": 995.2769999999999,
+      "input_data": {
+        "before_s2a": 5
+      },
+      "output_data": {
+        "after_s2a": 5
+      },
+      "success": true,
+      "error_message": ""
+    },
+    {
+      "stage": "validation",
+      "start_time": "2026-06-02T20:37:04.075303",
+      "end_time": "2026-06-02T20:37:04.075696",
+      "duration_ms": 0.393,
+      "input_data": {},
+      "output_data": {
+        "out_of_corpus": false
+      },
+      "success": true,
+      "error_message": ""
+    },
+    {
+      "stage": "generation",
+      "start_time": "2026-06-02T20:37:04.075736",
+      "end_time": "2026-06-02T20:37:06.331046",
+      "duration_ms": 2255.31,
+      "input_data": {},
+      "output_data": {
+        "answer": "Unfortunately, the provided context does not contain information about the repeated questions asked in Amazon. \n\nHowever, it does mention that the original dataset contains each interview experience repeated 3\u00d7 per company [Source 1]. This suggests that the interview experiences for each company are duplicated, but it does not specify what the repeated questions are.\n\nTherefore, I cannot provide a specific answer to this question based on the provided context."
+      },
+      "success": true,
+      "error_message": ""
+    },
+    {
+      "stage": "reliability_check",
+      "start_time": "2026-06-02T20:37:06.331107",
+      "end_time": "2026-06-02T20:37:27.716208",
+      "duration_ms": 21385.101,
+      "input_data": {},
+      "output_data": {
+        "verdict": "WARN",
+        "groundedness": 0.6666666666666666
+      },
+      "success": true,
+      "error_message": ""
+    }
+  ],
+  "chunks": []
+}

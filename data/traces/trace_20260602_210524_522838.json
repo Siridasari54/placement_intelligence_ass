@@ -1,0 +1,45 @@
+{
+  "trace_id": "trace_20260602_210524_522838",
+  "query": "Who is the CEO of Amazon?",
+  "start_time": "2026-06-02T21:05:24.522869",
+  "end_time": "2026-06-02T21:05:26.491721",
+  "total_duration_ms": 1968.852,
+  "query_type": "tool_query",
+  "retrieval_strategy": "direct_lookup",
+  "final_answer": "Andy Jassy is the President and CEO of Amazon, succeeding Jeff Bezos in July 2021. He has held this position since then.\n\n**Source:**\nWeb Search (DuckDuckGo)\n",
+  "confidence_score": 1.0,
+  "success": true,
+  "error_message": "",
+  "metadata": {},
+  "stages": [
+    {
+      "stage": "query_planning",
+      "start_time": "2026-06-02T21:05:24.522911",
+      "end_time": "2026-06-02T21:05:26.491467",
+      "duration_ms": 1968.556,
+      "input_data": {
+        "query": "Who is the CEO of Amazon?"
+      },
+      "output_data": {
+        "routed_to_tool": true
+      },
+      "success": true,
+      "error_message": ""
+    },
+    {
+      "stage": "generation",
+      "start_time": "2026-06-02T21:05:26.491626",
+      "end_time": "2026-06-02T21:05:26.491678",
+      "duration_ms": 0.052,
+      "input_data": {
+        "tool": "execution"
+      },
+      "output_data": {
+        "answer": "Andy Jassy is the President and CEO of Amazon, succeeding Jeff Bezos in July 2021. He has held this position since then.\n\n**Source:**\nWeb Search (DuckDuckGo)\n"
+      },
+      "success": true,
+      "error_message": ""
+    }
+  ],
+  "chunks": []
+}

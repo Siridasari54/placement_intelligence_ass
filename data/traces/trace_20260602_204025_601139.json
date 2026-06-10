@@ -1,0 +1,45 @@
+{
+  "trace_id": "trace_20260602_204025_601139",
+  "query": "what are the top questions asked in amazon",
+  "start_time": "2026-06-02T20:40:25.601249",
+  "end_time": "2026-06-02T20:40:27.680429",
+  "total_duration_ms": 2079.18,
+  "query_type": "tool_query",
+  "retrieval_strategy": "direct_lookup",
+  "final_answer": "### \ud83c\udf10 Live Web Search: *\"what are the top questions asked in amazon\"*\n\nHere are the latest findings from public web sources:\n\n1. **[\u767b\u5f55QQ\u90ae\u7bb1](https://mail.qq.com/)**\n   QQ\u90ae\u7bb1\uff0c\u63d0\u4f9bqq.com\u3001foxmail.com\u540e\u7f00\u7684\u5b89\u5168\u3001\u7a33\u5b9a\u3001\u5feb\u901f\u3001\u4fbf\u6377\u7684\u514d\u8d39\u7535\u5b50\u90ae\u7bb1\u3002\u5f3a\u5927\u7684\u53cd\u5783\u573e\u90ae\u4ef6\u8fc7\u6ee4\uff0c10G\u8d85\u5927\u9644\u4ef6\u53d1\u9001\uff0c \u2026\n\n2. **[\u767b\u5f55QQ\u90ae\u7bb1](https://mail.qq.com/cgi-bin/loginpage?c=1)**\n   \u5b89\u5168\u3001\u7a33\u5b9a\u3001\u5feb\u901f\u3001\u4fbf\u6377\u7684\u514d\u8d39\u7535\u5b50\u90ae\u7bb1\u3002\u5f3a\u5927\u7684\u53cd\u5783\u573e\u90ae\u4ef6\u8fc7\u6ee4\uff0c10G\u8d85\u5927\u9644\u4ef6\u53d1\u9001\uff0c\u8f7b\u677e\u7ba1\u7406\u6240\u6709\u7535\u5b50\u53d1\u7968\uff0c\u5c3d\u5728QQ\u90ae\u7bb1\u3002 QQ \u2026\n\n3. **[QQ\u90ae\u7bb1\u624b\u673a\u5ba2\u6237\u7aef](https://app.mail.qq.com/)**\n   QQ\u90ae\u7bb1\u53ef\u8bbe\u7f6e\u4e3a\u7cfb\u7edf\u9ed8\u8ba4\u90ae\u4ef6\u5e94\u7528\uff0c\u5728\u5b89\u88c5iOS 14\u540e\uff0c\u53ef\u4ee5\u5c06QQ\u90ae\u7bb1\u8bbe\u7f6e\u4e3a\u9ed8\u8ba4\u90ae\u4ef6App\uff0c\u8ba9QQ\u90ae\u7bb1\u5728\u4f60\u51c6\u5907\u64b0\u5199\u65b0\u90ae\u4ef6\u65f6\u968f \u2026\n\n*Note: This information is fetched in real-time from the web and is not part of the static placement dataset.*",
+  "confidence_score": 1.0,
+  "success": true,
+  "error_message": "",
+  "metadata": {},
+  "stages": [
+    {
+      "stage": "query_planning",
+      "start_time": "2026-06-02T20:40:25.601829",
+      "end_time": "2026-06-02T20:40:27.678675",
+      "duration_ms": 2076.846,
+      "input_data": {
+        "query": "what are the top questions asked in amazon"
+      },
+      "output_data": {
+        "routed_to_tool": true
+      },
+      "success": true,
+      "error_message": ""
+    },
+    {
+      "stage": "generation",
+      "start_time": "2026-06-02T20:40:27.679165",
+      "end_time": "2026-06-02T20:40:27.680016",
+      "duration_ms": 0.851,
+      "input_data": {
+        "tool": "execution"
+      },
+      "output_data": {
+        "answer": "### \ud83c\udf10 Live Web Search: *\"what are the top questions asked in amazon\"*\n\nHere are the latest findings from public web sources:\n\n1. **[\u767b\u5f55QQ\u90ae\u7bb1](https://mail.qq.com/)**\n   QQ\u90ae\u7bb1\uff0c\u63d0\u4f9bqq.com\u3001foxmail.com\u540e\u7f00\u7684\u5b89\u5168\u3001\u7a33\u5b9a\u3001\u5feb\u901f\u3001\u4fbf\u6377\u7684\u514d\u8d39\u7535\u5b50\u90ae\u7bb1\u3002\u5f3a\u5927\u7684\u53cd\u5783\u573e\u90ae\u4ef6\u8fc7\u6ee4\uff0c10G\u8d85\u5927\u9644\u4ef6\u53d1\u9001\uff0c \u2026\n\n2. **[\u767b\u5f55QQ\u90ae\u7bb1](https://mail.qq.com/cgi-bin/loginpage?c=1)**\n   \u5b89\u5168\u3001\u7a33\u5b9a\u3001\u5feb\u901f\u3001\u4fbf\u6377\u7684\u514d\u8d39\u7535\u5b50\u90ae\u7bb1\u3002\u5f3a\u5927\u7684\u53cd\u5783\u573e\u90ae\u4ef6\u8fc7\u6ee4\uff0c10G\u8d85\u5927\u9644\u4ef6\u53d1\u9001\uff0c\u8f7b\u677e\u7ba1\u7406\u6240\u6709\u7535\u5b50\u53d1\u7968\uff0c\u5c3d\u5728QQ\u90ae\u7bb1\u3002 QQ \u2026\n\n3. **[QQ\u90ae\u7bb1\u624b\u673a\u5ba2\u6237\u7aef](https://app.mail.qq.com/)**\n   QQ\u90ae\u7bb1\u53ef\u8bbe\u7f6e\u4e3a\u7cfb\u7edf\u9ed8\u8ba4\u90ae\u4ef6\u5e94\u7528\uff0c\u5728\u5b89\u88c5iOS 14\u540e\uff0c\u53ef\u4ee5\u5c06QQ\u90ae\u7bb1\u8bbe\u7f6e\u4e3a\u9ed8\u8ba4\u90ae\u4ef6App\uff0c\u8ba9QQ\u90ae\u7bb1\u5728\u4f60\u51c6\u5907\u64b0\u5199\u65b0\u90ae\u4ef6\u65f6\u968f \u2026\n\n*Note: This information is fetched in real-time from the web and is not part of the static placement dataset.*"
+      },
+      "success": true,
+      "error_message": ""
+    }
+  ],
+  "chunks": []
+}

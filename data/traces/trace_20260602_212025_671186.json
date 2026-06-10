@@ -1,0 +1,45 @@
+{
+  "trace_id": "trace_20260602_212025_671186",
+  "query": "who is ceo of flipkart",
+  "start_time": "2026-06-02T21:20:25.671216",
+  "end_time": "2026-06-02T21:20:29.732235",
+  "total_duration_ms": 4061.019,
+  "query_type": "tool_query",
+  "retrieval_strategy": "direct_lookup",
+  "final_answer": "Kalyan Krishnamurthy is the CEO of Flipkart.\n\n---\n**Sources:**\n1. [Sachin Bansal - Forbes](https://www.forbes.com/profile/sachin-bansal/)\n2. [Kalyan Krishnamurthy (@_Kalyan_K) / Posts / X - Twitter](https://x.com/_kalyan_k)\n3. [Flipkart Corporate Website](https://corporate.flipkart.net/about-us)\n",
+  "confidence_score": 1.0,
+  "success": true,
+  "error_message": "",
+  "metadata": {},
+  "stages": [
+    {
+      "stage": "query_planning",
+      "start_time": "2026-06-02T21:20:25.671413",
+      "end_time": "2026-06-02T21:20:29.731024",
+      "duration_ms": 4059.6110000000003,
+      "input_data": {
+        "query": "who is ceo of flipkart"
+      },
+      "output_data": {
+        "routed_to_tool": true
+      },
+      "success": true,
+      "error_message": ""
+    },
+    {
+      "stage": "generation",
+      "start_time": "2026-06-02T21:20:29.731721",
+      "end_time": "2026-06-02T21:20:29.731956",
+      "duration_ms": 0.235,
+      "input_data": {
+        "tool": "execution"
+      },
+      "output_data": {
+        "answer": "Kalyan Krishnamurthy is the CEO of Flipkart.\n\n---\n**Sources:**\n1. [Sachin Bansal - Forbes](https://www.forbes.com/profile/sachin-bansal/)\n2. [Kalyan Krishnamurthy (@_Kalyan_K) / Posts / X - Twitter](https://x.com/_kalyan_k)\n3. [Flipkart Corporate Website](https://corporate.flipkart.net/about-us)\n"
+      },
+      "success": true,
+      "error_message": ""
+    }
+  ],
+  "chunks": []
+}

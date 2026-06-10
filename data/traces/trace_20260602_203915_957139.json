@@ -1,0 +1,118 @@
+{
+  "trace_id": "trace_20260602_203915_957139",
+  "query": "what are the repeated question asked in amazon",
+  "start_time": "2026-06-02T20:39:15.957233",
+  "end_time": "2026-06-02T20:39:26.624285",
+  "total_duration_ms": 10667.052,
+  "query_type": "factual",
+  "retrieval_strategy": "semantic_heavy",
+  "final_answer": "Based on the provided context, there is no direct information about the repeated questions asked in Amazon. The context mentions that the original dataset contains each interview experience repeated 3\u00d7 per company, but it does not specify the questions themselves ([Source 1]). \n\nHowever, it does mention that Amazon offers the highest package, which is 28.6 LPA, and that it uses Python in interviews ([Source 4]).",
+  "confidence_score": 0.33117763479109996,
+  "success": true,
+  "error_message": "",
+  "metadata": {},
+  "stages": [
+    {
+      "stage": "query_planning",
+      "start_time": "2026-06-02T20:39:15.957795",
+      "end_time": "2026-06-02T20:39:16.752164",
+      "duration_ms": 794.369,
+      "input_data": {
+        "query": "what are the repeated question asked in amazon"
+      },
+      "output_data": {
+        "routed_to_tool": false
+      },
+      "success": true,
+      "error_message": ""
+    },
+    {
+      "stage": "retrieval",
+      "start_time": "2026-06-02T20:39:17.059772",
+      "end_time": "2026-06-02T20:39:20.565313",
+      "duration_ms": 3505.541,
+      "input_data": {},
+      "output_data": {
+        "retrieved_count": 25
+      },
+      "success": true,
+      "error_message": ""
+    },
+    {
+      "stage": "reranking",
+      "start_time": "2026-06-02T20:39:20.566086",
+      "end_time": "2026-06-02T20:39:20.567179",
+      "duration_ms": 1.093,
+      "input_data": {},
+      "output_data": {
+        "reranked_count": 5
+      },
+      "success": true,
+      "error_message": ""
+    },
+    {
+      "stage": "refinement",
+      "start_time": "2026-06-02T20:39:20.567640",
+      "end_time": "2026-06-02T20:39:20.568588",
+      "duration_ms": 0.948,
+      "input_data": {},
+      "output_data": {
+        "refined_count": 5
+      },
+      "success": true,
+      "error_message": ""
+    },
+    {
+      "stage": "query_rewriting",
+      "start_time": "2026-06-02T20:39:20.568909",
+      "end_time": "2026-06-02T20:39:23.233606",
+      "duration_ms": 2664.6969999999997,
+      "input_data": {
+        "before_s2a": 5
+      },
+      "output_data": {
+        "after_s2a": 5
+      },
+      "success": true,
+      "error_message": ""
+    },
+    {
+      "stage": "validation",
+      "start_time": "2026-06-02T20:39:23.235231",
+      "end_time": "2026-06-02T20:39:23.245295",
+      "duration_ms": 10.064,
+      "input_data": {},
+      "output_data": {
+        "out_of_corpus": false
+      },
+      "success": true,
+      "error_message": ""
+    },
+    {
+      "stage": "generation",
+      "start_time": "2026-06-02T20:39:23.249046",
+      "end_time": "2026-06-02T20:39:24.559656",
+      "duration_ms": 1310.6100000000001,
+      "input_data": {},
+      "output_data": {
+        "answer": "Based on the provided context, there is no direct information about the repeated questions asked in Amazon. The context mentions that the original dataset contains each interview experience repeated 3\u00d7 per company, but it does not specify the questions themselves ([Source 1]). \n\nHowever, it does mention that Amazon offers the highest package, which is 28.6 LPA, and that it uses Python in interviews ([Source 4])."
+      },
+      "success": true,
+      "error_message": ""
+    },
+    {
+      "stage": "reliability_check",
+      "start_time": "2026-06-02T20:39:24.560265",
+      "end_time": "2026-06-02T20:39:26.621865",
+      "duration_ms": 2061.6,
+      "input_data": {},
+      "output_data": {
+        "verdict": "WARN",
+        "groundedness": 1.0
+      },
+      "success": true,
+      "error_message": ""
+    }
+  ],
+  "chunks": []
+}

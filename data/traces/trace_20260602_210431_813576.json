@@ -1,0 +1,45 @@
+{
+  "trace_id": "trace_20260602_210431_813576",
+  "query": "who is ceo of wipro",
+  "start_time": "2026-06-02T21:04:31.813610",
+  "end_time": "2026-06-02T21:04:33.796000",
+  "total_duration_ms": 1982.39,
+  "query_type": "tool_query",
+  "retrieval_strategy": "direct_lookup",
+  "final_answer": "Srini Pallia is the Chief Executive Officer and Managing Director of Wipro Limited.\n\n**Source:**\nWeb Search (DuckDuckGo)\n",
+  "confidence_score": 1.0,
+  "success": true,
+  "error_message": "",
+  "metadata": {},
+  "stages": [
+    {
+      "stage": "query_planning",
+      "start_time": "2026-06-02T21:04:31.813671",
+      "end_time": "2026-06-02T21:04:33.795656",
+      "duration_ms": 1981.9850000000001,
+      "input_data": {
+        "query": "who is ceo of wipro"
+      },
+      "output_data": {
+        "routed_to_tool": true
+      },
+      "success": true,
+      "error_message": ""
+    },
+    {
+      "stage": "generation",
+      "start_time": "2026-06-02T21:04:33.795824",
+      "end_time": "2026-06-02T21:04:33.795915",
+      "duration_ms": 0.091,
+      "input_data": {
+        "tool": "execution"
+      },
+      "output_data": {
+        "answer": "Srini Pallia is the Chief Executive Officer and Managing Director of Wipro Limited.\n\n**Source:**\nWeb Search (DuckDuckGo)\n"
+      },
+      "success": true,
+      "error_message": ""
+    }
+  ],
+  "chunks": []
+}

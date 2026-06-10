@@ -1,0 +1,93 @@
+{
+  "trace_id": "trace_20260602_203648_278597",
+  "query": "What is the cutoff for Amazon?",
+  "start_time": "2026-06-02T20:36:48.278635",
+  "end_time": "2026-06-02T20:36:54.288706",
+  "total_duration_ms": 6010.071,
+  "query_type": "",
+  "retrieval_strategy": "",
+  "final_answer": "",
+  "confidence_score": 0.0,
+  "success": false,
+  "error_message": "Out of corpus",
+  "metadata": {},
+  "stages": [
+    {
+      "stage": "query_planning",
+      "start_time": "2026-06-02T20:36:48.278719",
+      "end_time": "2026-06-02T20:36:49.118917",
+      "duration_ms": 840.198,
+      "input_data": {
+        "query": "What is the cutoff for Amazon?"
+      },
+      "output_data": {
+        "routed_to_tool": false
+      },
+      "success": true,
+      "error_message": ""
+    },
+    {
+      "stage": "retrieval",
+      "start_time": "2026-06-02T20:36:49.347537",
+      "end_time": "2026-06-02T20:36:52.740984",
+      "duration_ms": 3393.447,
+      "input_data": {},
+      "output_data": {
+        "retrieved_count": 25
+      },
+      "success": true,
+      "error_message": ""
+    },
+    {
+      "stage": "reranking",
+      "start_time": "2026-06-02T20:36:52.741081",
+      "end_time": "2026-06-02T20:36:52.741235",
+      "duration_ms": 0.154,
+      "input_data": {},
+      "output_data": {
+        "reranked_count": 5
+      },
+      "success": true,
+      "error_message": ""
+    },
+    {
+      "stage": "refinement",
+      "start_time": "2026-06-02T20:36:52.741265",
+      "end_time": "2026-06-02T20:36:52.741347",
+      "duration_ms": 0.082,
+      "input_data": {},
+      "output_data": {
+        "refined_count": 2
+      },
+      "success": true,
+      "error_message": ""
+    },
+    {
+      "stage": "query_rewriting",
+      "start_time": "2026-06-02T20:36:52.741374",
+      "end_time": "2026-06-02T20:36:54.288089",
+      "duration_ms": 1546.7150000000001,
+      "input_data": {
+        "before_s2a": 2
+      },
+      "output_data": {
+        "after_s2a": 2
+      },
+      "success": true,
+      "error_message": ""
+    },
+    {
+      "stage": "validation",
+      "start_time": "2026-06-02T20:36:54.288321",
+      "end_time": "2026-06-02T20:36:54.288571",
+      "duration_ms": 0.25,
+      "input_data": {},
+      "output_data": {
+        "out_of_corpus": true
+      },
+      "success": true,
+      "error_message": ""
+    }
+  ],
+  "chunks": []
+}

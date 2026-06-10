@@ -1,0 +1,45 @@
+{
+  "trace_id": "trace_20260602_220832_488082",
+  "query": "Who won the most recent IPL season?",
+  "start_time": "2026-06-02T22:08:32.488184",
+  "end_time": "2026-06-02T22:08:37.312106",
+  "total_duration_ms": 4823.922,
+  "query_type": "tool_query",
+  "retrieval_strategy": "direct_lookup",
+  "final_answer": "The most recent Indian Premier League (IPL) season was IPL 2023, and the Gujarat Titans won the title by defeating the Chennai Super Kings in the final.\n\n---\n**Source:**\n1. [Internal Knowledge Base (Search Fallback)](#)\n",
+  "confidence_score": 1.0,
+  "success": true,
+  "error_message": "",
+  "metadata": {},
+  "stages": [
+    {
+      "stage": "query_planning",
+      "start_time": "2026-06-02T22:08:32.488674",
+      "end_time": "2026-06-02T22:08:37.310231",
+      "duration_ms": 4821.557000000001,
+      "input_data": {
+        "query": "Who won the most recent IPL season?"
+      },
+      "output_data": {
+        "routed_to_tool": true
+      },
+      "success": true,
+      "error_message": ""
+    },
+    {
+      "stage": "generation",
+      "start_time": "2026-06-02T22:08:37.311400",
+      "end_time": "2026-06-02T22:08:37.311840",
+      "duration_ms": 0.44,
+      "input_data": {
+        "tool": "execution"
+      },
+      "output_data": {
+        "answer": "The most recent Indian Premier League (IPL) season was IPL 2023, and the Gujarat Titans won the title by defeating the Chennai Super Kings in the final.\n\n---\n**Source:**\n1. [Internal Knowledge Base (Search Fallback)](#)\n"
+      },
+      "success": true,
+      "error_message": ""
+    }
+  ],
+  "chunks": []
+}

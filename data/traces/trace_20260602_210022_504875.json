@@ -1,0 +1,45 @@
+{
+  "trace_id": "trace_20260602_210022_504875",
+  "query": "who is ceo of wipro",
+  "start_time": "2026-06-02T21:00:22.504980",
+  "end_time": "2026-06-02T21:00:24.626011",
+  "total_duration_ms": 2121.031,
+  "query_type": "tool_query",
+  "retrieval_strategy": "direct_lookup",
+  "final_answer": "I searched the web for your query but could not retrieve any relevant search results. Please try again later or refine your query.",
+  "confidence_score": 1.0,
+  "success": true,
+  "error_message": "",
+  "metadata": {},
+  "stages": [
+    {
+      "stage": "query_planning",
+      "start_time": "2026-06-02T21:00:22.505226",
+      "end_time": "2026-06-02T21:00:24.625324",
+      "duration_ms": 2120.098,
+      "input_data": {
+        "query": "who is ceo of wipro"
+      },
+      "output_data": {
+        "routed_to_tool": true
+      },
+      "success": true,
+      "error_message": ""
+    },
+    {
+      "stage": "generation",
+      "start_time": "2026-06-02T21:00:24.625690",
+      "end_time": "2026-06-02T21:00:24.625859",
+      "duration_ms": 0.16899999999999998,
+      "input_data": {
+        "tool": "execution"
+      },
+      "output_data": {
+        "answer": "I searched the web for your query but could not retrieve any relevant search results. Please try again later or refine your query."
+      },
+      "success": true,
+      "error_message": ""
+    }
+  ],
+  "chunks": []
+}

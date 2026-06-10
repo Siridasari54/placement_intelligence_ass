@@ -1,0 +1,118 @@
+{
+  "trace_id": "trace_20260602_205907_333686",
+  "query": "What is the cutoff for Amazon?",
+  "start_time": "2026-06-02T20:59:07.333752",
+  "end_time": "2026-06-02T20:59:21.735286",
+  "total_duration_ms": 14401.534,
+  "query_type": "factual",
+  "retrieval_strategy": "semantic_heavy",
+  "final_answer": "The cutoff for Amazon, based on the provided context, is as follows:\n\n- Minimum CGPA: 6.4 [Source 1, Source 2]\n- Maximum backlogs: 1 [Source 1]\n\nThere is no information provided about any other cutoff criteria.",
+  "confidence_score": 0.37805383022774325,
+  "success": true,
+  "error_message": "",
+  "metadata": {},
+  "stages": [
+    {
+      "stage": "query_planning",
+      "start_time": "2026-06-02T20:59:07.333954",
+      "end_time": "2026-06-02T20:59:07.923135",
+      "duration_ms": 589.1809999999999,
+      "input_data": {
+        "query": "What is the cutoff for Amazon?"
+      },
+      "output_data": {
+        "routed_to_tool": false
+      },
+      "success": true,
+      "error_message": ""
+    },
+    {
+      "stage": "retrieval",
+      "start_time": "2026-06-02T20:59:08.268173",
+      "end_time": "2026-06-02T20:59:11.573157",
+      "duration_ms": 3304.984,
+      "input_data": {},
+      "output_data": {
+        "retrieved_count": 25
+      },
+      "success": true,
+      "error_message": ""
+    },
+    {
+      "stage": "reranking",
+      "start_time": "2026-06-02T20:59:11.573461",
+      "end_time": "2026-06-02T20:59:11.577523",
+      "duration_ms": 4.061999999999999,
+      "input_data": {},
+      "output_data": {
+        "reranked_count": 5
+      },
+      "success": true,
+      "error_message": ""
+    },
+    {
+      "stage": "refinement",
+      "start_time": "2026-06-02T20:59:11.577887",
+      "end_time": "2026-06-02T20:59:11.578905",
+      "duration_ms": 1.018,
+      "input_data": {},
+      "output_data": {
+        "refined_count": 2
+      },
+      "success": true,
+      "error_message": ""
+    },
+    {
+      "stage": "query_rewriting",
+      "start_time": "2026-06-02T20:59:11.579199",
+      "end_time": "2026-06-02T20:59:12.108776",
+      "duration_ms": 529.577,
+      "input_data": {
+        "before_s2a": 2
+      },
+      "output_data": {
+        "after_s2a": 2
+      },
+      "success": true,
+      "error_message": ""
+    },
+    {
+      "stage": "validation",
+      "start_time": "2026-06-02T20:59:12.109794",
+      "end_time": "2026-06-02T20:59:12.110700",
+      "duration_ms": 0.906,
+      "input_data": {},
+      "output_data": {
+        "out_of_corpus": false
+      },
+      "success": true,
+      "error_message": ""
+    },
+    {
+      "stage": "generation",
+      "start_time": "2026-06-02T20:59:12.110809",
+      "end_time": "2026-06-02T20:59:14.262965",
+      "duration_ms": 2152.1560000000004,
+      "input_data": {},
+      "output_data": {
+        "answer": "The cutoff for Amazon, based on the provided context, is as follows:\n\n- Minimum CGPA: 6.4 [Source 1, Source 2]\n- Maximum backlogs: 1 [Source 1]\n\nThere is no information provided about any other cutoff criteria."
+      },
+      "success": true,
+      "error_message": ""
+    },
+    {
+      "stage": "reliability_check",
+      "start_time": "2026-06-02T20:59:14.263036",
+      "end_time": "2026-06-02T20:59:21.734910",
+      "duration_ms": 7471.874,
+      "input_data": {},
+      "output_data": {
+        "verdict": "WARN",
+        "groundedness": 0.5
+      },
+      "success": true,
+      "error_message": ""
+    }
+  ],
+  "chunks": []
+}

@@ -1,0 +1,93 @@
+{
+  "trace_id": "trace_20260604_105750_715175",
+  "query": "who is the principal of shri vishnu engineering college for women",
+  "start_time": "2026-06-04T10:57:50.715387",
+  "end_time": "2026-06-04T10:57:57.769234",
+  "total_duration_ms": 7053.847,
+  "query_type": "",
+  "retrieval_strategy": "",
+  "final_answer": "",
+  "confidence_score": 0.0,
+  "success": false,
+  "error_message": "Out of corpus",
+  "metadata": {},
+  "stages": [
+    {
+      "stage": "query_planning",
+      "start_time": "2026-06-04T10:57:50.716209",
+      "end_time": "2026-06-04T10:57:51.359530",
+      "duration_ms": 643.321,
+      "input_data": {
+        "query": "who is the principal of shri vishnu engineering college for women"
+      },
+      "output_data": {
+        "routed_to_tool": false
+      },
+      "success": true,
+      "error_message": ""
+    },
+    {
+      "stage": "retrieval",
+      "start_time": "2026-06-04T10:57:51.959052",
+      "end_time": "2026-06-04T10:57:55.897736",
+      "duration_ms": 3938.6839999999997,
+      "input_data": {},
+      "output_data": {
+        "retrieved_count": 25
+      },
+      "success": true,
+      "error_message": ""
+    },
+    {
+      "stage": "reranking",
+      "start_time": "2026-06-04T10:57:55.900081",
+      "end_time": "2026-06-04T10:57:55.908880",
+      "duration_ms": 8.799,
+      "input_data": {},
+      "output_data": {
+        "reranked_count": 5
+      },
+      "success": true,
+      "error_message": ""
+    },
+    {
+      "stage": "refinement",
+      "start_time": "2026-06-04T10:57:55.911553",
+      "end_time": "2026-06-04T10:57:55.914963",
+      "duration_ms": 3.4099999999999997,
+      "input_data": {},
+      "output_data": {
+        "refined_count": 5
+      },
+      "success": true,
+      "error_message": ""
+    },
+    {
+      "stage": "query_rewriting",
+      "start_time": "2026-06-04T10:57:55.916959",
+      "end_time": "2026-06-04T10:57:57.759348",
+      "duration_ms": 1842.3890000000001,
+      "input_data": {
+        "before_s2a": 5
+      },
+      "output_data": {
+        "after_s2a": 5
+      },
+      "success": true,
+      "error_message": ""
+    },
+    {
+      "stage": "validation",
+      "start_time": "2026-06-04T10:57:57.762934",
+      "end_time": "2026-06-04T10:57:57.767632",
+      "duration_ms": 4.6979999999999995,
+      "input_data": {},
+      "output_data": {
+        "out_of_corpus": true
+      },
+      "success": true,
+      "error_message": ""
+    }
+  ],
+  "chunks": []
+}

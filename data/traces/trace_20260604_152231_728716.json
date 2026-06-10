@@ -1,0 +1,45 @@
+{
+  "trace_id": "trace_20260604_152231_728716",
+  "query": "who is the latest winners in ipl ",
+  "start_time": "2026-06-04T15:22:31.728784",
+  "end_time": "2026-06-04T15:22:36.750144",
+  "total_duration_ms": 5021.36,
+  "query_type": "tool_query",
+  "retrieval_strategy": "direct_lookup",
+  "final_answer": "The latest winners of the IPL are the Royal Challengers Bangalore (2026) and the Gujarat Titans (2022).\n\n---\n**Sources:**\n1. [IPL Winners List (2008 to 2026), All Season Winners PDF with ...](https://testbook.com/news/ipl-winners-list-all-season-notes-pdf)\n2. [List of IPL Winners PDF - BYJU'S](https://byjus.com/govt-exams/ipl-winners-list)\n3. [All IPL Winners List From (2008-2026) - YouTube](https://www.youtube.com/watch?v=lJoVR5xy_tI)\n",
+  "confidence_score": 1.0,
+  "success": true,
+  "error_message": "",
+  "metadata": {},
+  "stages": [
+    {
+      "stage": "query_planning",
+      "start_time": "2026-06-04T15:22:31.729118",
+      "end_time": "2026-06-04T15:22:36.748977",
+      "duration_ms": 5019.859,
+      "input_data": {
+        "query": "who is the latest winners in ipl "
+      },
+      "output_data": {
+        "routed_to_tool": true
+      },
+      "success": true,
+      "error_message": ""
+    },
+    {
+      "stage": "generation",
+      "start_time": "2026-06-04T15:22:36.749442",
+      "end_time": "2026-06-04T15:22:36.749825",
+      "duration_ms": 0.383,
+      "input_data": {
+        "tool": "execution"
+      },
+      "output_data": {
+        "answer": "The latest winners of the IPL are the Royal Challengers Bangalore (2026) and the Gujarat Titans (2022).\n\n---\n**Sources:**\n1. [IPL Winners List (2008 to 2026), All Season Winners PDF with ...](https://testbook.com/news/ipl-winners-list-all-season-notes-pdf)\n2. [List of IPL Winners PDF - BYJU'S](https://byjus.com/govt-exams/ipl-winners-list)\n3. [All IPL Winners List From (2008-2026) - YouTube](https://www.youtube.com/watch?v=lJoVR5xy_tI)\n"
+      },
+      "success": true,
+      "error_message": ""
+    }
+  ],
+  "chunks": []
+}

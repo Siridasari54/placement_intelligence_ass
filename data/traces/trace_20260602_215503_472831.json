@@ -1,0 +1,45 @@
+{
+  "trace_id": "trace_20260602_215503_472831",
+  "query": "who is ceo of flipkart",
+  "start_time": "2026-06-02T21:55:03.472873",
+  "end_time": "2026-06-02T21:55:07.488016",
+  "total_duration_ms": 4015.143,
+  "query_type": "tool_query",
+  "retrieval_strategy": "direct_lookup",
+  "final_answer": "I tried to search the web for your query but encountered an issue: Unauthorized: missing or invalid API key.",
+  "confidence_score": 1.0,
+  "success": true,
+  "error_message": "",
+  "metadata": {},
+  "stages": [
+    {
+      "stage": "query_planning",
+      "start_time": "2026-06-02T21:55:03.473398",
+      "end_time": "2026-06-02T21:55:07.487409",
+      "duration_ms": 4014.011,
+      "input_data": {
+        "query": "who is ceo of flipkart"
+      },
+      "output_data": {
+        "routed_to_tool": true
+      },
+      "success": true,
+      "error_message": ""
+    },
+    {
+      "stage": "generation",
+      "start_time": "2026-06-02T21:55:07.487644",
+      "end_time": "2026-06-02T21:55:07.487812",
+      "duration_ms": 0.16799999999999998,
+      "input_data": {
+        "tool": "execution"
+      },
+      "output_data": {
+        "answer": "I tried to search the web for your query but encountered an issue: Unauthorized: missing or invalid API key."
+      },
+      "success": true,
+      "error_message": ""
+    }
+  ],
+  "chunks": []
+}

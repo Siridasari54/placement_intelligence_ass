@@ -1,0 +1,118 @@
+{
+  "trace_id": "trace_20260602_203818_704746",
+  "query": "What is the cutoff for Amazon?",
+  "start_time": "2026-06-02T20:38:18.704787",
+  "end_time": "2026-06-02T20:38:27.927089",
+  "total_duration_ms": 9222.302000000001,
+  "query_type": "factual",
+  "retrieval_strategy": "semantic_heavy",
+  "final_answer": "The cutoff for Amazon is a CGPA of 6.4 [Source 1, Source 2].",
+  "confidence_score": 0.26816239316239315,
+  "success": true,
+  "error_message": "",
+  "metadata": {},
+  "stages": [
+    {
+      "stage": "query_planning",
+      "start_time": "2026-06-02T20:38:18.704882",
+      "end_time": "2026-06-02T20:38:19.200078",
+      "duration_ms": 495.196,
+      "input_data": {
+        "query": "What is the cutoff for Amazon?"
+      },
+      "output_data": {
+        "routed_to_tool": false
+      },
+      "success": true,
+      "error_message": ""
+    },
+    {
+      "stage": "retrieval",
+      "start_time": "2026-06-02T20:38:19.433140",
+      "end_time": "2026-06-02T20:38:23.661871",
+      "duration_ms": 4228.731,
+      "input_data": {},
+      "output_data": {
+        "retrieved_count": 25
+      },
+      "success": true,
+      "error_message": ""
+    },
+    {
+      "stage": "reranking",
+      "start_time": "2026-06-02T20:38:23.662174",
+      "end_time": "2026-06-02T20:38:23.662848",
+      "duration_ms": 0.674,
+      "input_data": {},
+      "output_data": {
+        "reranked_count": 5
+      },
+      "success": true,
+      "error_message": ""
+    },
+    {
+      "stage": "refinement",
+      "start_time": "2026-06-02T20:38:23.662989",
+      "end_time": "2026-06-02T20:38:23.663363",
+      "duration_ms": 0.374,
+      "input_data": {},
+      "output_data": {
+        "refined_count": 2
+      },
+      "success": true,
+      "error_message": ""
+    },
+    {
+      "stage": "query_rewriting",
+      "start_time": "2026-06-02T20:38:23.663566",
+      "end_time": "2026-06-02T20:38:24.243670",
+      "duration_ms": 580.1039999999999,
+      "input_data": {
+        "before_s2a": 2
+      },
+      "output_data": {
+        "after_s2a": 2
+      },
+      "success": true,
+      "error_message": ""
+    },
+    {
+      "stage": "validation",
+      "start_time": "2026-06-02T20:38:24.244968",
+      "end_time": "2026-06-02T20:38:24.246489",
+      "duration_ms": 1.521,
+      "input_data": {},
+      "output_data": {
+        "out_of_corpus": false
+      },
+      "success": true,
+      "error_message": ""
+    },
+    {
+      "stage": "generation",
+      "start_time": "2026-06-02T20:38:24.246887",
+      "end_time": "2026-06-02T20:38:25.469663",
+      "duration_ms": 1222.776,
+      "input_data": {},
+      "output_data": {
+        "answer": "The cutoff for Amazon is a CGPA of 6.4 [Source 1, Source 2]."
+      },
+      "success": true,
+      "error_message": ""
+    },
+    {
+      "stage": "reliability_check",
+      "start_time": "2026-06-02T20:38:25.469785",
+      "end_time": "2026-06-02T20:38:27.926751",
+      "duration_ms": 2456.966,
+      "input_data": {},
+      "output_data": {
+        "verdict": "WARN",
+        "groundedness": 1.0
+      },
+      "success": true,
+      "error_message": ""
+    }
+  ],
+  "chunks": []
+}

@@ -1,0 +1,93 @@
+{
+  "trace_id": "trace_20260602_210318_741763",
+  "query": "what are the repeated question asked in amazon",
+  "start_time": "2026-06-02T21:03:18.741801",
+  "end_time": "2026-06-02T21:03:19.938489",
+  "total_duration_ms": 1196.6879999999999,
+  "query_type": "",
+  "retrieval_strategy": "",
+  "final_answer": "",
+  "confidence_score": 0.0,
+  "success": false,
+  "error_message": "Out of corpus",
+  "metadata": {},
+  "stages": [
+    {
+      "stage": "query_planning",
+      "start_time": "2026-06-02T21:03:18.741879",
+      "end_time": "2026-06-02T21:03:19.002168",
+      "duration_ms": 260.289,
+      "input_data": {
+        "query": "what are the repeated question asked in amazon"
+      },
+      "output_data": {
+        "routed_to_tool": false
+      },
+      "success": true,
+      "error_message": ""
+    },
+    {
+      "stage": "retrieval",
+      "start_time": "2026-06-02T21:03:19.102739",
+      "end_time": "2026-06-02T21:03:19.159808",
+      "duration_ms": 57.069,
+      "input_data": {},
+      "output_data": {
+        "retrieved_count": 25
+      },
+      "success": true,
+      "error_message": ""
+    },
+    {
+      "stage": "reranking",
+      "start_time": "2026-06-02T21:03:19.159976",
+      "end_time": "2026-06-02T21:03:19.160378",
+      "duration_ms": 0.402,
+      "input_data": {},
+      "output_data": {
+        "reranked_count": 5
+      },
+      "success": true,
+      "error_message": ""
+    },
+    {
+      "stage": "refinement",
+      "start_time": "2026-06-02T21:03:19.160476",
+      "end_time": "2026-06-02T21:03:19.160658",
+      "duration_ms": 0.182,
+      "input_data": {},
+      "output_data": {
+        "refined_count": 5
+      },
+      "success": true,
+      "error_message": ""
+    },
+    {
+      "stage": "query_rewriting",
+      "start_time": "2026-06-02T21:03:19.160726",
+      "end_time": "2026-06-02T21:03:19.937738",
+      "duration_ms": 777.0120000000001,
+      "input_data": {
+        "before_s2a": 5
+      },
+      "output_data": {
+        "after_s2a": 5
+      },
+      "success": true,
+      "error_message": ""
+    },
+    {
+      "stage": "validation",
+      "start_time": "2026-06-02T21:03:19.938014",
+      "end_time": "2026-06-02T21:03:19.938360",
+      "duration_ms": 0.34600000000000003,
+      "input_data": {},
+      "output_data": {
+        "out_of_corpus": true
+      },
+      "success": true,
+      "error_message": ""
+    }
+  ],
+  "chunks": []
+}
