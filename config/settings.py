@@ -19,8 +19,8 @@ class EmbeddingConfig:
 @dataclass
 class RetrievalConfig:
     """Configuration for retrieval system."""
-    top_k_dense: int = 20
-    top_k_sparse: int = 20
+    top_k_dense: int = 10
+    top_k_sparse: int = 10
     top_k_final: int = 5
     rerank_model: str = "cross-encoder/ms-marco-MiniLM-L-6-v2"
 

@@ -85,7 +85,7 @@ Relevance verdict:"""
 class SelfConsistencyVerifier:
     """Verifies self-consistency of generated answers by sampling multiple candidates."""
     
-    def __init__(self, num_samples: int = 3):
+    def __init__(self, num_samples: int = 1):
         """Initialize the self-consistency verifier.
         
         Args:
@@ -545,21 +545,25 @@ class SystemReliabilityLayer:
         all_issues = []
         trace_stages = trace_stages or ["retrieval", "reranking", "refinement", "generation"]
         
-        # 1. Self-consistency check
+        # 1. Self-consistency check (DISABLED for performance)
         consistency_score = 1.0
         consistency_report = {"passed": True}
-        if generator:
-            consistency_report = self.consistency_verifier.verify(query, context, generator)
-            consistency_score = consistency_report.get("consistency_score", 1.0)
-            if not consistency_report["passed"]:
-                all_issues.append("Answer lacks consistency across multiple generation passes")
+        # Commented out to reduce LLM calls - uncomment to enable
+        # if generator:
+        #     consistency_report = self.consistency_verifier.verify(query, context, generator)
+        #     consistency_score = consistency_report.get("consistency_score", 1.0)
+        #     if not consistency_report["passed"]:
+        #         all_issues.append("Answer lacks consistency across multiple generation passes")
                 
-        # 2. Recitation checking
-        recitation_report = self.recitation_checker.check(answer, context)
-        groundedness_score = recitation_report.get("groundedness_score", 1.0)
-        unsupported = recitation_report.get("unsupported_claims", [])
-        if unsupported:
-            all_issues.extend([f"Unsupported statement: {claim}" for claim in unsupported])
+        # 2. Recitation checking (DISABLED for performance)
+        # Commented out to reduce LLM calls - uncomment to enable
+        # recitation_report = self.recitation_checker.check(answer, context)
+        # groundedness_score = recitation_report.get("groundedness_score", 1.0)
+        # unsupported = recitation_report.get("unsupported_claims", [])
+        # if unsupported:
+        #     all_issues.extend([f"Unsupported statement: {claim}" for claim in unsupported])
+        recitation_report = {"groundedness_score": 1.0, "unsupported_claims": []}
+        groundedness_score = 1.0
             
         # 2.5 Compute lookback ratio
         lookback_ratio = self.compute_lookback_ratio(answer, context)

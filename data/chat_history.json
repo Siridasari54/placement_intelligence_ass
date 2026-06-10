@@ -52,6 +52,90 @@
             }
           }
         ]
+      },
+      {
+        "role": "user",
+        "content": "what are the top dsa questions asked in amazon"
+      },
+      {
+        "role": "assistant",
+        "content": "Based on the placement data, Amazon requires a minimum CGPA of 6.4 with maximum 1 backlogs allowed. The package offered is 28.6 LPA with a bond period of 2 years. Key topics include DSA, C++, LLD with focus on C++.",
+        "confidence": 0.9,
+        "sources": [],
+        "reliability": {}
+      },
+      {
+        "role": "user",
+        "content": "what are the top dsa questions asked in amazon"
+      },
+      {
+        "role": "assistant",
+        "content": "Based on the placement data, Amazon requires a minimum CGPA of 6.4 with maximum 1 backlogs allowed. The package offered is 28.6 LPA with a bond period of 2 years. Key topics include DSA, C++, LLD with focus on C++.",
+        "confidence": 0.9,
+        "sources": [],
+        "reliability": {}
+      },
+      {
+        "role": "user",
+        "content": "what are the top dsa questions asked in amazon"
+      },
+      {
+        "role": "assistant",
+        "content": "Based on the placement data, Amazon requires a minimum CGPA of 6.4 with maximum 1 backlogs allowed. The package offered is 28.6 LPA with a bond period of 2 years. Key topics include DSA, C++, LLD with focus on C++.",
+        "confidence": 0.9,
+        "sources": [],
+        "reliability": {}
+      },
+      {
+        "role": "user",
+        "content": "who win the latest ipl"
+      },
+      {
+        "role": "assistant",
+        "content": "Based on the placement data, I have information about multiple companies including TCS, Infosys, Wipro, Google, Amazon, Microsoft, and others. Please specify which company you're interested in, or ask about the highest/lowest packages.",
+        "confidence": 0.9,
+        "sources": [],
+        "reliability": {}
+      },
+      {
+        "role": "user",
+        "content": "who win the latest ipl"
+      },
+      {
+        "role": "assistant",
+        "content": "Based on the placement data, I have information about multiple companies including TCS, Infosys, Wipro, Google, Amazon, Microsoft, and others. Please specify which company you're interested in, or ask about the highest/lowest packages.",
+        "confidence": 0.9,
+        "sources": [],
+        "reliability": {}
+      }
+    ]
+  },
+  {
+    "id": "20260610_124703_859012",
+    "title": "who win the latest ipl",
+    "timestamp": "2026-06-10 12:48:30.998404",
+    "messages": [
+      {
+        "role": "user",
+        "content": "who win the latest ipl"
+      },
+      {
+        "role": "assistant",
+        "content": "The Royal Challengers Bangalore has been announced as the latest IPL 2026 winner, defeating the Gujarat Titans in the final.\n\n---\n**Sources:**\n1. [IPL Winners List (2008 to 2026), All Season Winners PDF with ...](https://testbook.com/news/ipl-winners-list-all-season-notes-pdf)\n2. [Indian Premier League - Wikipedia](https://en.wikipedia.org/wiki/Indian_Premier_League)\n3. [IPL winners in all seasons: Full list of Indian Premier League ...](https://sports.yahoo.com/articles/ipl-winners-seasons-full-list-140923720.html)\n",
+        "confidence": 1.0,
+        "sources": [],
+        "reliability": {}
+      },
+      {
+        "role": "user",
+        "content": "what are the top dsa questions asked in amazon"
+      },
+      {
+        "role": "assistant",
+        "content": "Two Sum, Maximum Subarray, and Valid Anagram are essential problems often asked in Amazon DSA interviews. Additionally, Arrays & Hashing, and other problems like Maximum Subarray are frequently asked in Amazon DSA interviews.\n\n---\n**Sources:**\n1. [10 top Amazon interview questions frequently asked for DSA (Data ...](https://leetcode.com/discuss/interview-question/5196401/10-top-Amazon-interview-questions-frequently-asked-for-DSA-(Data-Structures-and-Algorithms))\n2. [Curated Lists of DSA Amazon Interview Questions | 11 Years | Medium](https://sonikamaheshwari005.medium.com/curated-lists-of-dsa-interview-questions-4f4872ff9a0b)\n3. [Top 159 Amazon Interview Questions And Answers 2025 | TechPrep](https://www.techprep.app/companies/amazon)\n",
+        "confidence": 1.0,
+        "sources": [],
+        "reliability": {}
       }
     ]
   }

@@ -26,13 +26,15 @@ class CalculatorTool:
         
         query_lower = query.lower()
         
-        # 1. CGPA to Percentage Conversion
-        if "cgpa to percentage" in query_lower or "convert" in query_lower and "cgpa" in query_lower:
-            return self._convert_cgpa_to_percentage(query)
-            
-        # 2. Percentage to CGPA Conversion
-        if "percentage to cgpa" in query_lower:
-            return self._convert_percentage_to_cgpa(query)
+        # 1. CGPA/Percentage Conversion check
+        has_cgpa = "cgpa" in query_lower
+        has_percent = "percent" in query_lower or "percentage" in query_lower or "%" in query_lower
+        
+        if has_cgpa and has_percent:
+            if "to cgpa" in query_lower or "to_cgpa" in query_lower or "% to" in query_lower or "percentage to" in query_lower or "percent to" in query_lower:
+                return self._convert_percentage_to_cgpa(query)
+            else:
+                return self._convert_cgpa_to_percentage(query)
             
         # 3. Average Package / Statistics Calculation
         if "average" in query_lower or "mean" in query_lower:

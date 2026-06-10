@@ -88,58 +88,59 @@ class ToolRouter:
         """
         query_lower = query.lower()
         
-        # 1. First attempt: LLM-based agentic classification
-        if self.client:
-            try:
-                import json
-                prompt = f"""You are an intelligent query router for a college placement assistant.
-Analyze the user's query and decide which tool is best suited to answer it.
-
-Available Tools:
-1. "database": For structured query lookups about student records, eligibility checks, list of students placed, roll numbers, GPA cutoffs, or packages.
-   Examples: "Who got placed at Google?", "Which student has the highest GPA?", "List companies with package above 10 LPA", "Check eligibility for 22CS010".
-2. "web_search": For questions requiring live web lookup, current news, company CEOs, or general topics outside our static placement dataset.
-   Examples: "Who is the CEO of Google?", "What are the latest hiring trends in 2026?", "Who founded Wipro?".
-3. "calculator": For mathematical operations, conversions (e.g. CGPA to percentage, average calculations).
-   Examples: "What is 8.5 CGPA in percentage?", "Calculate average of 5, 8, 12", "Convert 85% to CGPA".
-4. "opinion_guard": For career guidance, subjective recommendations, or comparisons between companies.
-   Examples: "Should I join TCS or Infosys?", "Compare Google and Amazon", "Which company offers a better career growth?".
-5. "rag": For general placement dataset queries, company interview experiences, recruitment distributions, official process details, and general corpus lookup.
-   Examples: "What is Google's interview process?", "What rounds does TCS have?", "What is SVECW's placement history?".
-
-Choose exactly one tool from: ["database", "web_search", "calculator", "opinion_guard", "rag"].
-Respond in JSON format with two keys:
-- "tool": The chosen tool name (or "rag" if none of the specific tools are suitable).
-- "reason": A brief reason for this decision.
-
-Query: "{query}"
-JSON classification:"""
-
-                response = self.client.chat.completions.create(
-                    model=self.model,
-                    messages=[
-                        {"role": "system", "content": "You are a precise query classifier that outputs JSON containing 'tool' and 'reason'."},
-                        {"role": "user", "content": prompt}
-                    ],
-                    temperature=0.0,
-                    response_format={"type": "json_object"}
-                )
-                
-                res_content = response.choices[0].message.content.strip()
-                res_data = json.loads(res_content)
-                chosen_tool = res_data.get("tool", "rag")
-                reason = res_data.get("reason", "")
-                
-                logger.info(f"LLM Routing Decision: Selected '{chosen_tool}' (Reason: {reason})")
-                
-                if chosen_tool in self.tools:
-                    logger.info(f"Routing query to registered tool '{chosen_tool}'")
-                    return self.tools[chosen_tool].execute(query)
-                elif chosen_tool == "rag":
-                    return None
-                    
-            except Exception as e:
-                logger.error(f"LLM Tool Router failed: {e}. Falling back to heuristics.")
+        # 1. First attempt: LLM-based agentic classification (DISABLED for performance)
+        # Commented out to reduce latency - using heuristic fallback only
+        # if self.client:
+        #     try:
+        #         import json
+        #         prompt = f"""You are an intelligent query router for a college placement assistant.
+        # Analyze the user's query and decide which tool is best suited to answer it.
+        #
+        # Available Tools:
+        # 1. "database": For structured query lookups about student records, eligibility checks, list of students placed, roll numbers, GPA cutoffs, or packages.
+        #    Examples: "Who got placed at Google?", "Which student has the highest GPA?", "List companies with package above 10 LPA", "Check eligibility for 22CS010".
+        # 2. "web_search": For questions requiring live web lookup, current news, company CEOs, or general topics outside our static placement dataset.
+        #    Examples: "Who is the CEO of Google?", "What are the latest hiring trends in 2026?", "Who founded Wipro?".
+        # 3. "calculator": For mathematical operations, conversions (e.g. CGPA to percentage, average calculations).
+        #    Examples: "What is 8.5 CGPA in percentage?", "Calculate average of 5, 8, 12", "Convert 85% to CGPA".
+        # 4. "opinion_guard": For career guidance, subjective recommendations, or comparisons between companies.
+        #    Examples: "Should I join TCS or Infosys?", "Compare Google and Amazon", "Which company offers a better career growth?".
+        # 5. "rag": For general placement dataset queries, company interview experiences, recruitment distributions, official process details, and general corpus lookup.
+        #    Examples: "What is Google's interview process?", "What rounds does TCS have?", "What is SVECW's placement history?".
+        #
+        # Choose exactly one tool from: ["database", "web_search", "calculator", "opinion_guard", "rag"].
+        # Respond in JSON format with two keys:
+        # - "tool": The chosen tool name (or "rag" if none of the specific tools are suitable).
+        # - "reason": A brief reason for this decision.
+        #
+        # Query: "{query}"
+        # JSON classification:"""
+        #
+        #         response = self.client.chat.completions.create(
+        #             model=self.model,
+        #             messages=[
+        #                 {"role": "system", "content": "You are a precise query classifier that outputs JSON containing 'tool' and 'reason'."},
+        #                 {"role": "user", "content": prompt}
+        #             ],
+        #             temperature=0.0,
+        #             response_format={"type": "json_object"}
+        #         )
+        #         
+        #         res_content = response.choices[0].message.content.strip()
+        #         res_data = json.loads(res_content)
+        #         chosen_tool = res_data.get("tool", "rag")
+        #         reason = res_data.get("reason", "")
+        #         
+        #         logger.info(f"LLM Routing Decision: Selected '{chosen_tool}' (Reason: {reason})")
+        #         
+        #         if chosen_tool in self.tools:
+        #             logger.info(f"Routing query to registered tool '{chosen_tool}'")
+        #             return self.tools[chosen_tool].execute(query)
+        #         elif chosen_tool == "rag":
+        #             return None
+        #             
+        #     except Exception as e:
+        #         logger.error(f"LLM Tool Router failed: {e}. Falling back to heuristics.")
 
         # 2. Heuristic/Regex fallback if LLM routing fails or is unavailable
         # Opinion Guard fallback
@@ -157,7 +158,10 @@ JSON classification:"""
             "average", "mean", "cgpa to percentage", "percentage to cgpa", "convert",
             "calculate", "sum", "divided by", "multiplied by", "subtract", "plus"
         ]
-        if any(ind in query_lower for ind in math_indicators) and any(c.isdigit() for c in query_lower):
+        has_cgpa = "cgpa" in query_lower
+        has_percent = "percent" in query_lower or "percentage" in query_lower or "%" in query_lower
+        is_cgpa_percent = has_cgpa and has_percent
+        if (any(ind in query_lower for ind in math_indicators) or is_cgpa_percent) and any(c.isdigit() for c in query_lower):
             if "calculator" in self.tools:
                 logger.info("Routing query to Calculator Tool (Heuristic)")
                 return self.tools["calculator"].execute(query)
@@ -172,6 +176,17 @@ JSON classification:"""
             if "database" in self.tools:
                 logger.info("Routing query to Database Tool (Heuristic)")
                 return self.tools["database"].execute(query)
+        
+        # Web Search fallback
+        web_search_indicators = [
+            "ceo", "founder", "latest", "current", "news", "trends", "questions asked",
+            "interview questions", "dsa questions", "top questions", "common questions",
+            "hiring trends", "salary trends", "market trends", "outside", "external"
+        ]
+        if any(indicator in query_lower for indicator in web_search_indicators):
+            if "web_search" in self.tools:
+                logger.info("Routing query to Web Search Tool (Heuristic)")
+                return self.tools["web_search"].execute(query)
                 
         return None
 
@@ -225,7 +240,7 @@ class RAGPipeline:
         if self.multi_hop_retriever is None and MULTI_HOP_AVAILABLE and MultiHopRetriever is not None:
             self.multi_hop_retriever = MultiHopRetriever(
                 base_retriever=retriever,
-                max_hops=3,
+                max_hops=2,
                 min_confidence=0.6,
                 enable_query_rewriting=True
             )
@@ -398,10 +413,11 @@ class RAGPipeline:
         trace_stages.append("refinement")
         
         # ── STAGE 4.5: System 2 Attention Context Filtering ────────────────────
-        self.pipeline_tracer.start_stage(PipelineStage.QUERY_REWRITING, {"before_s2a": len(refined)})
-        refined = self.reliability_layer.apply_s2a(query, refined)
-        self.pipeline_tracer.end_stage(PipelineStage.QUERY_REWRITING, {"after_s2a": len(refined)})
-        trace_stages.append("query_rewriting")
+        # Disabled for performance - comment out to enable
+        # self.pipeline_tracer.start_stage(PipelineStage.QUERY_REWRITING, {"before_s2a": len(refined)})
+        # refined = self.reliability_layer.apply_s2a(query, refined)
+        # self.pipeline_tracer.end_stage(PipelineStage.QUERY_REWRITING, {"after_s2a": len(refined)})
+        # trace_stages.append("query_rewriting")
         
         # ── STAGE 4.6: Overshadow Limiter & Token Budgeting ──────────────────
         refined, overshadow_risk = self.overshadow_limiter.limit_context(refined)

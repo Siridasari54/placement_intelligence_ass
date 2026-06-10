@@ -21,5 +21,37 @@
       "groundedness": 0.0,
       "consistency": 0.2429673074834365
     }
+  },
+  {
+    "query": "who win the latest ipl",
+    "timestamp": "2026-06-10T12:48:30.991981",
+    "latency_ms": 0.0,
+    "documents_retrieved": 0,
+    "documents_reranked": 0,
+    "confidence_score": 1.0,
+    "reranking_scores": [],
+    "source_distribution": {},
+    "chunk_utilization": 0.0,
+    "token_usage": 0,
+    "metadata": {
+      "tool_execution": true,
+      "latency_ms": 5380.32341003418
+    }
+  },
+  {
+    "query": "what are the top dsa questions asked in amazon",
+    "timestamp": "2026-06-10T12:49:30.986794",
+    "latency_ms": 0.0,
+    "documents_retrieved": 0,
+    "documents_reranked": 0,
+    "confidence_score": 1.0,
+    "reranking_scores": [],
+    "source_distribution": {},
+    "chunk_utilization": 0.0,
+    "token_usage": 0,
+    "metadata": {
+      "tool_execution": true,
+      "latency_ms": 4445.641279220581
+    }
   }
 ]

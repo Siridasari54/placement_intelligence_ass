@@ -53,8 +53,9 @@ class QueryHandler:
             confidence = result.get("confidence", 0.0)
             answer = result.get("answer", "")
             
-            # Check if fallback should be used
-            use_fallback = (
+            # Check if fallback should be used (do not fallback for tools or cache)
+            is_tool_or_cache = result.get("query_type") in ["tool_query", "cached"]
+            use_fallback = not is_tool_or_cache and (
                 len(sources) == 0 or 
                 confidence < 0.3 or
                 "don't have enough information" in answer.lower() or

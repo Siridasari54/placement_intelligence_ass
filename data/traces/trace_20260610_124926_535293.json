@@ -1,0 +1,45 @@
+{
+  "trace_id": "trace_20260610_124926_535293",
+  "query": "what are the top dsa questions asked in amazon",
+  "start_time": "2026-06-10T12:49:26.535427",
+  "end_time": "2026-06-10T12:49:30.981598",
+  "total_duration_ms": 4446.170999999999,
+  "query_type": "tool_query",
+  "retrieval_strategy": "direct_lookup",
+  "final_answer": "Two Sum, Maximum Subarray, and Valid Anagram are essential problems often asked in Amazon DSA interviews. Additionally, Arrays & Hashing, and other problems like Maximum Subarray are frequently asked in Amazon DSA interviews.\n\n---\n**Sources:**\n1. [10 top Amazon interview questions frequently asked for DSA (Data ...](https://leetcode.com/discuss/interview-question/5196401/10-top-Amazon-interview-questions-frequently-asked-for-DSA-(Data-Structures-and-Algorithms))\n2. [Curated Lists of DSA Amazon Interview Questions | 11 Years | Medium](https://sonikamaheshwari005.medium.com/curated-lists-of-dsa-interview-questions-4f4872ff9a0b)\n3. [Top 159 Amazon Interview Questions And Answers 2025 | TechPrep](https://www.techprep.app/companies/amazon)\n",
+  "confidence_score": 1.0,
+  "success": true,
+  "error_message": "",
+  "metadata": {},
+  "stages": [
+    {
+      "stage": "query_planning",
+      "start_time": "2026-06-10T12:49:26.535763",
+      "end_time": "2026-06-10T12:49:30.980592",
+      "duration_ms": 4444.829000000001,
+      "input_data": {
+        "query": "what are the top dsa questions asked in amazon"
+      },
+      "output_data": {
+        "routed_to_tool": true
+      },
+      "success": true,
+      "error_message": ""
+    },
+    {
+      "stage": "generation",
+      "start_time": "2026-06-10T12:49:30.980933",
+      "end_time": "2026-06-10T12:49:30.981260",
+      "duration_ms": 0.32699999999999996,
+      "input_data": {
+        "tool": "execution"
+      },
+      "output_data": {
+        "answer": "Two Sum, Maximum Subarray, and Valid Anagram are essential problems often asked in Amazon DSA interviews. Additionally, Arrays & Hashing, and other problems like Maximum Subarray are frequently asked in Amazon DSA interviews.\n\n---\n**Sources:**\n1. [10 top Amazon interview questions frequently asked for DSA (Data ...](https://leetcode.com/discuss/interview-question/5196401/10-top-Amazon-interview-questions-frequently-asked-for-DSA-(Data-Structures-and-Algorithms))\n2. [Curated Lists of DSA Amazon Interview Questions | 11 Years | Medium](https://sonikamaheshwari005.medium.com/curated-lists-of-dsa-interview-questions-4f4872ff9a0b)\n3. [Top 159 Amazon Interview Questions And Answers 2025 | TechPrep](https://www.techprep.app/companies/amazon)\n"
+      },
+      "success": true,
+      "error_message": ""
+    }
+  ],
+  "chunks": []
+}

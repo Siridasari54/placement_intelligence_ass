@@ -24,7 +24,6 @@ from core.memory.memory_system import AIMemorySystem
 from core.analytics.retrieval_analytics import RetrievalAnalytics
 from core.reliability.system_reliability import SystemReliabilityLayer
 from core.retrieval.adaptive_strategy import AdaptiveRetrievalStrategy, DynamicRetriever
-from core.multidocument.multi_document_intelligence import DocumentIntelligence
 from core.pipeline import RAGPipeline
 from safety.conflict_detector import ConflictDetector
 from safety.fallback_guard import FallbackGuard
@@ -183,13 +182,7 @@ class ServiceFactory:
         adaptive_strategy = self.container.get_service(AdaptiveRetrievalStrategy)
         return DynamicRetriever(adaptive_strategy)
     
-    def create_document_intelligence(self) -> DocumentIntelligence:
-        """Create document intelligence instance.
-        
-        Returns:
-            DocumentIntelligence instance
-        """
-        return DocumentIntelligence()
+
     
     def create_multi_hop_retriever(self):
         """Create multi-hop retriever instance with query rewriting.
@@ -289,7 +282,7 @@ def register_services(container: ServiceContainer) -> None:
     container.register_singleton(AIMemorySystem, factory.create_memory_system())
     container.register_singleton(RetrievalAnalytics, factory.create_retrieval_analytics())
     container.register_singleton(SystemReliabilityLayer, factory.create_reliability_layer())
-    container.register_singleton(DocumentIntelligence, factory.create_document_intelligence())
+
     container.register_singleton(ConflictDetector, factory.create_conflict_detector())
     container.register_singleton(FallbackGuard, factory.create_fallback_guard())
     
