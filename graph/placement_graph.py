@@ -10,6 +10,8 @@ from nodes.limiter_node import limiter_node
 from nodes.confidence_node import confidence_node
 from nodes.generation_node import generation_node
 from nodes.fallback_node import fallback_node
+from nodes.rewrite_node import rewrite_node
+from nodes.multi_hop_node import multi_hop_node
 
 
 builder = StateGraph(PlacementState)
@@ -30,6 +32,10 @@ builder.add_node("generate", generation_node)
 
 builder.add_node("fallback", fallback_node)
 
+builder.add_node("rewrite", rewrite_node)
+
+builder.add_node("multi_hop", multi_hop_node)
+
 
 builder.set_entry_point("router")
 
@@ -44,7 +50,16 @@ builder.add_conditional_edges(
     }
 )
 
-builder.add_edge("retrieve", "rerank")
+builder.add_conditional_edges(
+    "retrieve",
+    lambda s: s.get("is_comparison", False),
+    {
+        True: "multi_hop",
+        False: "rerank",
+    }
+)
+
+builder.add_edge("multi_hop", "rerank")
 
 builder.add_edge("rerank", "conflict")
 
@@ -55,12 +70,14 @@ builder.add_edge("limit", "confidence")
 
 builder.add_conditional_edges(
     "confidence",
-    lambda s: s["fallback"],
+    lambda s: s["fallback"] and s.get("retry_count", 0) < 1,
     {
-        True: "fallback",
+        True: "rewrite",
         False: "generate",
     }
 )
+
+builder.add_edge("rewrite", "retrieve")
 
 builder.add_edge("generate", END)
 
