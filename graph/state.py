@@ -9,8 +9,12 @@ class PlacementState(TypedDict):
     """State for the placement intelligence graph."""
     
     query: str
+    original_query: str
     documents: List[Document]
     route: str
     confidence: float
     fallback: bool
     answer: str
+    retry_count: int
+    is_comparison: bool
+    comparison_entities: List[str]
