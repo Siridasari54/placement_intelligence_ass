@@ -11,13 +11,412 @@ logger = logging.getLogger(__name__)
 
 
 class QueryHandler:
-    """Handles query execution with RAG pipeline and fallback."""
+    """Handles query execution with intelligent routing to appropriate tools."""
     
     def __init__(self):
-        """Initialize query handler."""
+        """Initialize query handler with tool router and tools."""
         self.eligibility_data_file = "data/processed/eligibility_data.json"
+        self._initialize_tools()
+    
+    def _initialize_tools(self):
+        """Initialize all tools for routing."""
+        # Initialize all tool attributes to None first
+        self.tool_router = None
+        self.web_search_tool = None
+        self.database_tool = None
+        self.calculator_tool = None
+        self.opinion_guard = None
+        self.resume_analyzer = None
+        
+        try:
+            from core.pipeline import ToolRouter
+            from core.tools.web_search import WebSearchTool
+            from core.tools.database_tool import DatabaseTool
+            from core.tools.calculator import CalculatorTool
+            from core.tools.opinion_guard import OpinionGuard
+            from core.tools.resume_analyzer import ResumeAnalyzer
+            
+            # Initialize tool router
+            self.tool_router = ToolRouter()
+            
+            # Initialize and register tools individually to handle failures
+            try:
+                self.web_search_tool = WebSearchTool()
+                self.tool_router.register_tool("web_search", self.web_search_tool)
+                logger.info("WebSearchTool initialized successfully")
+            except Exception as e:
+                logger.error(f"Failed to initialize WebSearchTool: {e}")
+            
+            try:
+                self.database_tool = DatabaseTool()
+                self.tool_router.register_tool("database", self.database_tool)
+                logger.info("DatabaseTool initialized successfully")
+            except Exception as e:
+                logger.error(f"Failed to initialize DatabaseTool: {e}")
+            
+            try:
+                self.calculator_tool = CalculatorTool()
+                self.tool_router.register_tool("calculator", self.calculator_tool)
+                logger.info("CalculatorTool initialized successfully")
+            except Exception as e:
+                logger.error(f"Failed to initialize CalculatorTool: {e}")
+            
+            try:
+                self.opinion_guard = OpinionGuard()
+                self.tool_router.register_tool("opinion_guard", self.opinion_guard)
+                logger.info("OpinionGuard initialized successfully")
+            except Exception as e:
+                logger.error(f"Failed to initialize OpinionGuard: {e}")
+            
+            try:
+                self.resume_analyzer = ResumeAnalyzer()
+                self.tool_router.register_tool("resume_analyzer", self.resume_analyzer)
+                logger.info("ResumeAnalyzer initialized successfully")
+            except Exception as e:
+                logger.error(f"Failed to initialize ResumeAnalyzer: {e}")
+            
+            logger.info("QueryHandler initialized with available tools")
+        except Exception as e:
+            logger.error(f"Error initializing tools in QueryHandler: {e}")
+            # Keep all tools as None, will be handled in routing logic
     
     def execute_rag_query(self, query: str, retrieval_mode: str = "Auto") -> Dict[str, Any]:
+        """Execute query with intelligent routing to appropriate tool.
+        
+        Args:
+            query: User query
+            retrieval_mode: Retrieval mode to use (for RAG only)
+            
+        Returns:
+            Dictionary with query results
+        """
+        # Step 1: Classify the query to determine the appropriate route
+        route = self._classify_query(query)
+        logger.info(f"Query classified as: {route}")
+        
+        # Step 2: Route to appropriate tool based on classification
+        if route == "date":
+            return self._handle_date_time_query(query)
+        elif route == "web_search":
+            return self._execute_web_search(query)
+        elif route == "database":
+            return self._execute_database_query(query)
+        elif route == "calculator":
+            return self._execute_calculator(query)
+        elif route == "opinion":
+            return self._execute_opinion_guard(query)
+        elif route == "resume":
+            return self._execute_resume_analyzer(query)
+        elif route == "rag":
+            return self._execute_rag_pipeline(query, retrieval_mode)
+        else:
+            # Default to RAG if classification fails
+            logger.warning(f"Unknown route '{route}', defaulting to RAG")
+            return self._execute_rag_pipeline(query, retrieval_mode)
+    
+    def _classify_query(self, query: str) -> str:
+        """Classify query to determine appropriate route.
+        
+        Args:
+            query: User query
+            
+        Returns:
+            Route string: "rag", "web_search", "database", "calculator", "opinion", "resume", "date"
+        """
+        query_lower = query.lower()
+        
+        # Date/time queries - highest priority
+        date_time_indicators = [
+            "today", "date", "time", "what day", "what month", "what year",
+            "current date", "current time", "now", "what's the date", "what's the time"
+        ]
+        if any(indicator in query_lower for indicator in date_time_indicators):
+            return "date"
+        
+        # Resume-related queries
+        resume_indicators = [
+            "resume", "cv", "curriculum vitae", "analyze my resume", "review my resume",
+            "upload resume", "check resume"
+        ]
+        if any(indicator in query_lower for indicator in resume_indicators):
+            return "resume"
+        
+        # Calculator queries
+        calculator_indicators = [
+            "calculate", "average", "mean", "sum", "convert", "percentage",
+            "cgpa to percentage", "percentage to cgpa", "multiply", "divide", "add", "subtract"
+        ]
+        if any(indicator in query_lower for indicator in calculator_indicators) and any(c.isdigit() for c in query):
+            return "calculator"
+        
+        # Database queries
+        database_indicators = [
+            "show students", "list students", "top students", "highest cgpa", "lowest cgpa",
+            "how many students", "student records", "roll number", "placed students",
+            "list companies", "companies with", "package above", "package below"
+        ]
+        if any(indicator in query_lower for indicator in database_indicators):
+            return "database"
+        
+        # Opinion/subjective queries
+        opinion_indicators = [
+            "should i join", "which is better", "compare", "versus", "vs",
+            "recommend", "advice", "suggestion", "which company", "choose between"
+        ]
+        if any(indicator in query_lower for indicator in opinion_indicators):
+            return "opinion"
+        
+        # Web search queries (general knowledge, current affairs)
+        web_search_indicators = [
+            "population", "capital", "who is president", "who is prime minister",
+            "latest news", "current affairs", "ipl", "stock market", "weather",
+            "temperature", "ceo", "founder", "what is the population", "who won"
+        ]
+        if any(indicator in query_lower for indicator in web_search_indicators):
+            return "web_search"
+        
+        # Default to RAG for placement-related queries
+        return "rag"
+    
+    def _handle_date_time_query(self, query: str) -> Dict[str, Any]:
+        """Handle date/time queries with system information.
+        
+        Args:
+            query: User query
+            
+        Returns:
+            Dictionary with date/time answer
+        """
+        from datetime import datetime
+        
+        query_lower = query.lower()
+        
+        if "date" in query_lower:
+            answer = f"Today's date is {datetime.now().strftime('%B %d, %Y')}"
+        elif "time" in query_lower:
+            answer = f"Current time is {datetime.now().strftime('%I:%M %p')}"
+        elif "day" in query_lower:
+            answer = f"Today is {datetime.now().strftime('%A')}"
+        else:
+            answer = f"Today's date is {datetime.now().strftime('%B %d, %Y')} and the time is {datetime.now().strftime('%I:%M %p')}"
+        
+        return {
+            "answer": answer,
+            "sources": [],
+            "confidence": 1.0,
+            "latency": 0.0,
+            "query_type": "date_time",
+            "retrieval_mode": "system",
+            "conflicts": 0,
+            "success": True
+        }
+    
+    def _execute_web_search(self, query: str) -> Dict[str, Any]:
+        """Execute query through web search tool.
+        
+        Args:
+            query: User query
+            
+        Returns:
+            Dictionary with web search results
+        """
+        if self.web_search_tool is None:
+            logger.warning("WebSearchTool not available, falling back to RAG")
+            return self._execute_rag_pipeline(query)
+        
+        try:
+            start_time = time.time()
+            answer = self.web_search_tool.execute(query)
+            latency = (time.time() - start_time) * 1000
+            
+            return {
+                "answer": answer,
+                "sources": [],
+                "confidence": 0.8,
+                "latency": latency,
+                "query_type": "web_search",
+                "retrieval_mode": "web_search",
+                "conflicts": 0,
+                "success": True
+            }
+        except Exception as e:
+            logger.error(f"Error executing web search: {e}")
+            return {
+                "answer": f"Error performing web search: {str(e)}",
+                "sources": [],
+                "confidence": 0.0,
+                "latency": 0.0,
+                "query_type": "error",
+                "retrieval_mode": "error",
+                "conflicts": 0,
+                "success": False
+            }
+    
+    def _execute_database_query(self, query: str) -> Dict[str, Any]:
+        """Execute query through database tool.
+        
+        Args:
+            query: User query
+            
+        Returns:
+            Dictionary with database results
+        """
+        if self.database_tool is None:
+            logger.warning("DatabaseTool not available, falling back to RAG")
+            return self._execute_rag_pipeline(query)
+        
+        try:
+            start_time = time.time()
+            answer = self.database_tool.execute(query)
+            latency = (time.time() - start_time) * 1000
+            
+            return {
+                "answer": answer,
+                "sources": [],
+                "confidence": 0.9,
+                "latency": latency,
+                "query_type": "database",
+                "retrieval_mode": "database",
+                "conflicts": 0,
+                "success": True
+            }
+        except Exception as e:
+            logger.error(f"Error executing database query: {e}")
+            return {
+                "answer": f"Error querying database: {str(e)}",
+                "sources": [],
+                "confidence": 0.0,
+                "latency": 0.0,
+                "query_type": "error",
+                "retrieval_mode": "error",
+                "conflicts": 0,
+                "success": False
+            }
+    
+    def _execute_calculator(self, query: str) -> Dict[str, Any]:
+        """Execute query through calculator tool.
+        
+        Args:
+            query: User query
+            
+        Returns:
+            Dictionary with calculation results
+        """
+        if self.calculator_tool is None:
+            logger.warning("CalculatorTool not available, falling back to RAG")
+            return self._execute_rag_pipeline(query)
+        
+        try:
+            start_time = time.time()
+            answer = self.calculator_tool.execute(query)
+            latency = (time.time() - start_time) * 1000
+            
+            return {
+                "answer": answer,
+                "sources": [],
+                "confidence": 1.0,
+                "latency": latency,
+                "query_type": "calculator",
+                "retrieval_mode": "calculator",
+                "conflicts": 0,
+                "success": True
+            }
+        except Exception as e:
+            logger.error(f"Error executing calculator: {e}")
+            return {
+                "answer": f"Error performing calculation: {str(e)}",
+                "sources": [],
+                "confidence": 0.0,
+                "latency": 0.0,
+                "query_type": "error",
+                "retrieval_mode": "error",
+                "conflicts": 0,
+                "success": False
+            }
+    
+    def _execute_opinion_guard(self, query: str) -> Dict[str, Any]:
+        """Execute query through opinion guard.
+        
+        Args:
+            query: User query
+            
+        Returns:
+            Dictionary with opinion results
+        """
+        if self.opinion_guard is None:
+            logger.warning("OpinionGuard not available, falling back to RAG")
+            return self._execute_rag_pipeline(query)
+        
+        try:
+            start_time = time.time()
+            answer = self.opinion_guard.execute(query)
+            latency = (time.time() - start_time) * 1000
+            
+            return {
+                "answer": answer,
+                "sources": [],
+                "confidence": 0.7,
+                "latency": latency,
+                "query_type": "opinion",
+                "retrieval_mode": "opinion",
+                "conflicts": 0,
+                "success": True
+            }
+        except Exception as e:
+            logger.error(f"Error executing opinion guard: {e}")
+            return {
+                "answer": f"Error providing opinion: {str(e)}",
+                "sources": [],
+                "confidence": 0.0,
+                "latency": 0.0,
+                "query_type": "error",
+                "retrieval_mode": "error",
+                "conflicts": 0,
+                "success": False
+            }
+    
+    def _execute_resume_analyzer(self, query: str) -> Dict[str, Any]:
+        """Execute query through resume analyzer.
+        
+        Args:
+            query: User query
+            
+        Returns:
+            Dictionary with resume analysis results
+        """
+        if self.resume_analyzer is None:
+            logger.warning("ResumeAnalyzer not available, falling back to RAG")
+            return self._execute_rag_pipeline(query)
+        
+        try:
+            start_time = time.time()
+            answer = self.resume_analyzer.execute(query)
+            latency = (time.time() - start_time) * 1000
+            
+            return {
+                "answer": answer,
+                "sources": [],
+                "confidence": 0.8,
+                "latency": latency,
+                "query_type": "resume",
+                "retrieval_mode": "resume",
+                "conflicts": 0,
+                "success": True
+            }
+        except Exception as e:
+            logger.error(f"Error executing resume analyzer: {e}")
+            return {
+                "answer": f"Error analyzing resume: {str(e)}",
+                "sources": [],
+                "confidence": 0.0,
+                "latency": 0.0,
+                "query_type": "error",
+                "retrieval_mode": "error",
+                "conflicts": 0,
+                "success": False
+            }
+    
+    def _execute_rag_pipeline(self, query: str, retrieval_mode: str = "Auto") -> Dict[str, Any]:
         """Execute query through RAG pipeline with fallback to eligibility data.
         
         Args:

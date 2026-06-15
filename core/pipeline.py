@@ -77,70 +77,90 @@ class ToolRouter:
         self.tools[name] = tool
         logger.info(f"Registered tool: {name}")
         
-    def classify_and_dispatch(self, query: str) -> Optional[str]:
+    def classify_and_dispatch(self, query: str, raw_transcript: str = None) -> Optional[str]:
         """Classify query intent and route to the correct tool automatically.
         
         Args:
-            query: User query string
+            query: User query string (may be normalized from multilingual input)
+            raw_transcript: Optional raw transcript from voice input for debugging
             
         Returns:
             Factual tool result string, or None if query requires RAG pipeline
         """
         query_lower = query.lower()
         
-        # 1. First attempt: LLM-based agentic classification (DISABLED for performance)
-        # Commented out to reduce latency - using heuristic fallback only
-        # if self.client:
-        #     try:
-        #         import json
-        #         prompt = f"""You are an intelligent query router for a college placement assistant.
-        # Analyze the user's query and decide which tool is best suited to answer it.
-        #
-        # Available Tools:
-        # 1. "database": For structured query lookups about student records, eligibility checks, list of students placed, roll numbers, GPA cutoffs, or packages.
-        #    Examples: "Who got placed at Google?", "Which student has the highest GPA?", "List companies with package above 10 LPA", "Check eligibility for 22CS010".
-        # 2. "web_search": For questions requiring live web lookup, current news, company CEOs, or general topics outside our static placement dataset.
-        #    Examples: "Who is the CEO of Google?", "What are the latest hiring trends in 2026?", "Who founded Wipro?".
-        # 3. "calculator": For mathematical operations, conversions (e.g. CGPA to percentage, average calculations).
-        #    Examples: "What is 8.5 CGPA in percentage?", "Calculate average of 5, 8, 12", "Convert 85% to CGPA".
-        # 4. "opinion_guard": For career guidance, subjective recommendations, or comparisons between companies.
-        #    Examples: "Should I join TCS or Infosys?", "Compare Google and Amazon", "Which company offers a better career growth?".
-        # 5. "rag": For general placement dataset queries, company interview experiences, recruitment distributions, official process details, and general corpus lookup.
-        #    Examples: "What is Google's interview process?", "What rounds does TCS have?", "What is SVECW's placement history?".
-        #
-        # Choose exactly one tool from: ["database", "web_search", "calculator", "opinion_guard", "rag"].
-        # Respond in JSON format with two keys:
-        # - "tool": The chosen tool name (or "rag" if none of the specific tools are suitable).
-        # - "reason": A brief reason for this decision.
-        #
-        # Query: "{query}"
-        # JSON classification:"""
-        #
-        #         response = self.client.chat.completions.create(
-        #             model=self.model,
-        #             messages=[
-        #                 {"role": "system", "content": "You are a precise query classifier that outputs JSON containing 'tool' and 'reason'."},
-        #                 {"role": "user", "content": prompt}
-        #             ],
-        #             temperature=0.0,
-        #             response_format={"type": "json_object"}
-        #         )
-        #         
-        #         res_content = response.choices[0].message.content.strip()
-        #         res_data = json.loads(res_content)
-        #         chosen_tool = res_data.get("tool", "rag")
-        #         reason = res_data.get("reason", "")
-        #         
-        #         logger.info(f"LLM Routing Decision: Selected '{chosen_tool}' (Reason: {reason})")
-        #         
-        #         if chosen_tool in self.tools:
-        #             logger.info(f"Routing query to registered tool '{chosen_tool}'")
-        #             return self.tools[chosen_tool].execute(query)
-        #         elif chosen_tool == "rag":
-        #             return None
-        #             
-        #     except Exception as e:
-        #         logger.error(f"LLM Tool Router failed: {e}. Falling back to heuristics.")
+        # Log routing information for debugging
+        if raw_transcript:
+            logger.info(f"Raw Transcript: {raw_transcript}")
+        logger.info(f"Normalized Query: {query}")
+        
+        # 1. First attempt: LLM-based agentic classification with multilingual support
+        if self.client:
+            try:
+                import json
+                prompt = f"""You are an intelligent query router for a college placement assistant.
+Analyze the user's query and decide which tool is best suited to answer it.
+
+Available Tools:
+1. "database": For structured query lookups about student records, eligibility checks, list of students placed, roll numbers, GPA cutoffs, or packages.
+   Examples: "Who got placed at Google?", "Which student has the highest GPA?", "List companies with package above 10 LPA", "Check eligibility for 22CS010".
+2. "web_search": For questions requiring live web lookup, current news, company CEOs, general knowledge, or topics outside our static placement dataset.
+   Examples: "Who is the CEO of Google?", "What are the latest hiring trends in 2026?", "Who founded Wipro?", "Wipro CEO evaru?", "Infosys CEO entha?", "What is today's date?", "What time is it?".
+3. "calculator": For mathematical operations, conversions (e.g. CGPA to percentage, average calculations).
+   Examples: "What is 8.5 CGPA in percentage?", "Calculate average of 5, 8, 12", "Convert 85% to CGPA", "Convert 7.5 CGPA to percentage".
+4. "opinion_guard": For career guidance, subjective recommendations, or comparisons between companies.
+   Examples: "Should I join TCS or Infosys?", "Compare Google and Amazon", "Which company offers a better career growth?".
+5. "rag": For general placement dataset queries, company interview experiences, recruitment distributions, official process details, and general corpus lookup.
+   Examples: "What is Google's interview process?", "What rounds does TCS have?", "What is SVECW's placement history?", "TCS CGPA entha?", "Google package entha?".
+
+IMPORTANT: Out-of-scope questions (date, time, weather, general knowledge) should route to WEB_SEARCH, not RAG.
+
+Multilingual Examples (Telugu-English mixed):
+- "Wipro CEO evaru" → WEB_SEARCH (Who is the CEO of Wipro?)
+- "Infosys package entha" → RAG (What package does Infosys offer?)
+- "TCS CGPA entha" → RAG (What is the CGPA requirement for TCS?)
+- "Google lo internship unda" → RAG (Does Google offer internships?)
+- "Student with CGPA 7 and 1 backlog eligible companies" → DATABASE/RAG
+- "Convert 7.5 CGPA to percentage" → CALCULATOR
+- "Today date entha" → WEB_SEARCH (What is today's date?)
+
+Choose exactly one tool from: ["database", "web_search", "calculator", "opinion_guard", "rag"].
+Respond in JSON format with two keys:
+- "tool": The chosen tool name (or "rag" if none of the specific tools are suitable).
+- "reason": A brief reason for this decision.
+- "confidence": A confidence score between 0.0 and 1.0 for this routing decision.
+
+Query: "{query}"
+JSON classification:"""
+
+                response = self.client.chat.completions.create(
+                    model=self.model,
+                    messages=[
+                        {"role": "system", "content": "You are a precise query classifier that outputs JSON containing 'tool', 'reason', and 'confidence'."},
+                        {"role": "user", "content": prompt}
+                    ],
+                    temperature=0.0,
+                    response_format={"type": "json_object"}
+                )
+                
+                res_content = response.choices[0].message.content.strip()
+                res_data = json.loads(res_content)
+                chosen_tool = res_data.get("tool", "rag")
+                reason = res_data.get("reason", "")
+                confidence = res_data.get("confidence", 0.5)
+                
+                logger.info(f"LLM Routing Decision: Selected '{chosen_tool}' (Reason: {reason}, Confidence: {confidence})")
+                logger.info(f"Selected Tool: {chosen_tool}")
+                logger.info(f"Routing Confidence: {confidence}")
+                
+                if chosen_tool in self.tools:
+                    logger.info(f"Routing query to registered tool '{chosen_tool}'")
+                    return self.tools[chosen_tool].execute(query)
+                elif chosen_tool == "rag":
+                    return None
+                    
+            except Exception as e:
+                logger.error(f"LLM Tool Router failed: {e}. Falling back to heuristics.")
 
         # 2. Heuristic/Regex fallback if LLM routing fails or is unavailable
         # Opinion Guard fallback
@@ -151,6 +171,8 @@ class ToolRouter:
         if any(indicator in query_lower for indicator in opinion_indicators):
             if "opinion_guard" in self.tools:
                 logger.info("Routing query to Opinion Guard (Heuristic)")
+                logger.info(f"Selected Tool: opinion_guard")
+                logger.info(f"Routing Confidence: 0.8 (heuristic)")
                 return self.tools["opinion_guard"].execute(query)
                 
         # Calculator fallback
@@ -164,6 +186,8 @@ class ToolRouter:
         if (any(ind in query_lower for ind in math_indicators) or is_cgpa_percent) and any(c.isdigit() for c in query_lower):
             if "calculator" in self.tools:
                 logger.info("Routing query to Calculator Tool (Heuristic)")
+                logger.info(f"Selected Tool: calculator")
+                logger.info(f"Routing Confidence: 0.8 (heuristic)")
                 return self.tools["calculator"].execute(query)
                 
         # Database fallback
@@ -175,6 +199,8 @@ class ToolRouter:
         if any(ind in query_lower for ind in db_indicators):
             if "database" in self.tools:
                 logger.info("Routing query to Database Tool (Heuristic)")
+                logger.info(f"Selected Tool: database")
+                logger.info(f"Routing Confidence: 0.8 (heuristic)")
                 return self.tools["database"].execute(query)
         
         # Web Search fallback
@@ -183,11 +209,31 @@ class ToolRouter:
             "interview questions", "dsa questions", "top questions", "common questions",
             "hiring trends", "salary trends", "market trends", "outside", "external"
         ]
+        
+        # Out-of-scope/general knowledge indicators
+        out_of_scope_indicators = [
+            "today", "date", "time", "weather", "temperature", "what day", "what month",
+            "what year", "current date", "current time", "now", "capital", "population",
+            "who is president", "who is prime minister", "country", "city"
+        ]
+        
+        if any(indicator in query_lower for indicator in out_of_scope_indicators):
+            if "web_search" in self.tools:
+                logger.info("Routing query to Web Search Tool (Out-of-scope question)")
+                logger.info(f"Selected Tool: web_search")
+                logger.info(f"Routing Confidence: 0.9 (heuristic)")
+                return self.tools["web_search"].execute(query)
+        
         if any(indicator in query_lower for indicator in web_search_indicators):
             if "web_search" in self.tools:
                 logger.info("Routing query to Web Search Tool (Heuristic)")
+                logger.info(f"Selected Tool: web_search")
+                logger.info(f"Routing Confidence: 0.8 (heuristic)")
                 return self.tools["web_search"].execute(query)
-                
+        
+        logger.info("No specific tool matched, routing to RAG pipeline")
+        logger.info(f"Selected Tool: RAG")
+        logger.info(f"Routing Confidence: 0.5 (default)")
         return None
 
 
@@ -296,7 +342,23 @@ class RAGPipeline:
         # ── STAGE 0: Intelligent Tool Routing ─────────────────────────────────
         self.pipeline_tracer.start_stage(PipelineStage.QUERY_PLANNING, {"query": query})
         
-        tool_result = self.tool_router.classify_and_dispatch(query)
+        # Check if this is a voice query with raw transcript
+        raw_transcript = None
+        routing_confidence = 0.5  # Default routing confidence
+        
+        # Check session state for voice transcript (for Streamlit UI)
+        try:
+            import streamlit as st
+            if 'voice_transcript' in st.session_state and st.session_state.voice_transcript:
+                raw_transcript = st.session_state.voice_transcript
+        except:
+            pass
+        
+        tool_result = self.tool_router.classify_and_dispatch(query, raw_transcript)
+        
+        # Extract routing confidence from logs (simplified approach)
+        # In a production system, we'd return this from classify_and_dispatch
+        routing_confidence = 0.8 if tool_result else 0.5
         
         self.pipeline_tracer.end_stage(PipelineStage.QUERY_PLANNING, {"routed_to_tool": tool_result is not None})
         trace_stages.append("query_planning")
@@ -458,7 +520,7 @@ class RAGPipeline:
         # ── STAGE 7: Factual Recitation Checking & Reliability Verdict ─────────
         self.pipeline_tracer.start_stage(PipelineStage.RELIABILITY_CHECK)
         
-        base_confidence = self._calculate_confidence(refined)
+        base_confidence = self._calculate_confidence(refined, query, routing_confidence)
         reliability_report = self.reliability_layer.check_reliability(
             query=query,
             answer=answer,
@@ -624,8 +686,39 @@ class RAGPipeline:
             
         return filtered
     
-    def _calculate_confidence(self, documents: List[Document]) -> float:
-        """Calculate confidence score based on retrieved documents."""
+    def _calculate_confidence(self, documents: List[Document], query: str = None, routing_confidence: float = 0.5) -> float:
+        """Calculate confidence score based on retrieved documents and routing confidence.
+        
+        Separates retrieval confidence from answer confidence:
+        - Retrieval confidence: Based on document count and relevance scores
+        - Answer confidence: Based on routing confidence and semantic match
+        
+        Args:
+            documents: Retrieved documents
+            query: Original query for semantic relevance check
+            routing_confidence: Confidence score from the routing layer
+            
+        Returns:
+            Combined confidence score
+        """
         if not documents:
             return 0.0
-        return min(len(documents) / settings.retrieval.top_k_final, 1.0)
+        
+        # Base retrieval confidence based on document count
+        retrieval_confidence = min(len(documents) / settings.retrieval.top_k_final, 1.0)
+        
+        # Consider rerank scores if available
+        if documents and hasattr(documents[0], 'metadata'):
+            rerank_scores = [doc.metadata.get("rerank_score", 0.5) for doc in documents]
+            avg_rerank_score = sum(rerank_scores) / len(rerank_scores) if rerank_scores else 0.5
+            # Weight retrieval confidence by average rerank score
+            retrieval_confidence = retrieval_confidence * avg_rerank_score
+        
+        # Combine retrieval confidence with routing confidence
+        # If routing confidence is low (e.g., uncertain routing to RAG), reduce overall confidence
+        combined_confidence = (retrieval_confidence * 0.7) + (routing_confidence * 0.3)
+        
+        # Log confidence breakdown for debugging
+        logger.info(f"Confidence Breakdown - Retrieval: {retrieval_confidence:.2f}, Routing: {routing_confidence:.2f}, Combined: {combined_confidence:.2f}")
+        
+        return combined_confidence
