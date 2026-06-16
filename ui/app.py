@@ -13,7 +13,6 @@ from ui.styles import get_custom_css
 from ui.session_manager import SessionManager
 from ui.query_handler import QueryHandler
 from ui.analytics_ui import render_system_health, render_chunk_inspector, render_query_history
-from ui.voice_input import transcribe_audio_via_api
 
 # Page configuration - MUST be first Streamlit command
 st.set_page_config(
@@ -55,12 +54,6 @@ if "messages" not in st.session_state:
 if "last_query_trace" not in st.session_state:
     st.session_state.last_query_trace = None
 
-if "voice_transcript" not in st.session_state:
-    st.session_state.voice_transcript = ""
-
-if "voice_result" not in st.session_state:
-    st.session_state.voice_result = None
-
 # Initialize managers
 session_manager = SessionManager()
 query_handler = QueryHandler()
@@ -85,12 +78,11 @@ with st.sidebar:
     # 1. Unified Navigation Selection
     page = st.radio("Navigation", [
         "💬 Chat Assistant", 
-        "🎤 Voice Input",
         "✅ Eligibility Checker", 
         "📄 Resume Analyzer", 
         "⚖️ Company Compare",
         "📊 System Analytics"
-    ], key="navigation_page")
+    ])
     
     st.markdown("---")
     
@@ -336,145 +328,6 @@ if page == "💬 Chat Assistant":
             "content": prompt
         })
         st.rerun()
-
-elif page == "🎤 Voice Input":
-    st.title("🎤 Voice-Activated Query Assistant")
-    st.caption("Ask questions about college placement data using your voice. Transcription is powered by Groq Whisper API.")
-    
-    col1, col2 = st.columns([1, 1])
-    
-    with col1:
-        st.subheader("🎙️ Capture Audio")
-        voice_lang = st.selectbox("Speech Language", ["English", "Telugu", "Hindi"], index=0, key="voice_page_lang")
-        voice_mode = st.selectbox("Retrieval Mode", ["Auto", "Semantic Heavy", "Keyword Heavy", "Balanced"], index=0, key="voice_page_mode")
-        
-        audio_file = st.audio_input("Record your question:", key="voice_page_audio")
-        uploaded_audio = st.file_uploader("Or upload an audio file (.wav, .mp3, .m4a)", type=["wav", "mp3", "m4a", "webm", "ogg"], key="voice_page_upload")
-        
-        selected_audio = audio_file if audio_file else uploaded_audio
-        
-        transcribe_btn = st.button("Transcribe & Ask Assistant", type="primary", use_container_width=True, disabled=(selected_audio is None))
-        
-        if selected_audio and transcribe_btn:
-            with st.spinner("Transcribing audio..."):
-                if hasattr(selected_audio, "seek"):
-                    selected_audio.seek(0)
-                normalized_query, raw_transcript = transcribe_audio_via_api(selected_audio, voice_lang)
-                
-            if normalized_query:
-                # Store both normalized and raw transcript for debugging
-                st.session_state.voice_transcript = raw_transcript
-                with st.spinner("Running placement assistant query..."):
-                    try:
-                        result = query_handler.execute_rag_query(normalized_query, voice_mode)
-                        st.session_state.voice_result = result
-                        
-                        # Cache last trace with both normalized and raw transcript
-                        st.session_state.last_query_trace = {
-                            "query": normalized_query,
-                            "raw_transcript": raw_transcript,
-                            "answer": result["answer"],
-                            "retrieved_docs": result.get("sources", []),
-                            "confidence": result["confidence"],
-                            "latency": result["latency"],
-                            "query_type": result.get("query_type", "unknown"),
-                            "retrieval_mode": result.get("retrieval_mode", voice_mode)
-                        }
-                        
-                        # Track metrics
-                        st.session_state.system_metrics["total_queries"] += 1
-                        n = st.session_state.system_metrics["total_queries"]
-                        if n == 1:
-                            st.session_state.system_metrics["avg_latency"] = result["latency"]
-                            st.session_state.system_metrics["avg_confidence"] = result["confidence"]
-                        else:
-                            st.session_state.system_metrics["avg_latency"] = (st.session_state.system_metrics["avg_latency"] * 0.9) + (result["latency"] * 0.1)
-                            st.session_state.system_metrics["avg_confidence"] = (st.session_state.system_metrics["avg_confidence"] * 0.9) + (result["confidence"] * 0.1)
-                        
-                        # Track query history with normalized query
-                        st.session_state.query_history.append({
-                            "query": normalized_query,
-                            "raw_transcript": raw_transcript,
-                            "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                            "confidence": result["confidence"],
-                            "latency": result["latency"]
-                        })
-                    except Exception as e:
-                        logger.error(f"Error executing voice RAG query: {e}", exc_info=True)
-                        st.error(f"An error occurred: {str(e)}")
-                        st.session_state.voice_result = None
-            else:
-                st.error("Audio transcription failed. Please check your voice settings or Groq API key.")
-                st.session_state.voice_result = None
-                st.session_state.voice_transcript = ""
-                
-    with col2:
-        st.subheader("💬 Response & Insights")
-        
-        if st.session_state.voice_transcript:
-            st.info(f"🗣️ **Transcript:** {st.session_state.voice_transcript}")
-            
-        if st.session_state.voice_result:
-            result = st.session_state.voice_result
-            st.markdown(f"### 🎓 Assistant Response\n\n{result['answer']}")
-            
-            # Confidence & reliability metrics
-            if "reliability" in result and result["reliability"]:
-                rel = result["reliability"]
-                verdict = rel.get("verdict", "PASS")
-                groundedness = rel.get("groundedness_score", 1.0)
-                consistency = rel.get("consistency_score", 1.0)
-                
-                badge_class = "badge-pass" if verdict == "PASS" else "badge-warn" if verdict == "WARN" else "badge-fail"
-                st.markdown(f"""
-                <div style="margin-top: 0.5rem; margin-bottom: 0.5rem;">
-                    <span class="badge {badge_class}">🛡️ Reliability: {verdict}</span>
-                    <span style="font-size: 0.85rem; color: #aaa; margin-right: 15px;">Groundedness: **{groundedness:.0%}**</span>
-                    <span style="font-size: 0.85rem; color: #aaa;">Self-Consistency: **{consistency:.0%}**</span>
-                </div>
-                """, unsafe_allow_html=True)
-            
-            # Citations
-            if result.get("sources"):
-                with st.expander("🔍 View Referenced Sources"):
-                    for i, source in enumerate(result["sources"][:3]):
-                        st.markdown(f"**[Source {i+1}]:**")
-                        st.markdown(source["text"][:300] + "...")
-                        st.caption(f"Metadata: {source['metadata']}")
-                        
-            # Add continue in chat assistant button
-            if st.button("💬 Continue in Chat Assistant", key="continue_to_chat_btn", use_container_width=True):
-                # Append to active session messages
-                st.session_state.messages.append({
-                    "role": "user",
-                    "content": st.session_state.voice_transcript
-                })
-                st.session_state.messages.append({
-                    "role": "assistant",
-                    "content": result["answer"],
-                    "confidence": result["confidence"],
-                    "sources": result.get("sources", [])[:3],
-                    "reliability": result.get("reliability", {})
-                })
-                
-                # Save current session
-                st.session_state.chat_sessions = session_manager.save_current_session(
-                    st.session_state.chat_sessions,
-                    st.session_state.current_session_id,
-                    st.session_state.messages
-                )
-                session_manager.save_chat_history(st.session_state.chat_sessions)
-                
-                # Clear voice page state
-                st.session_state.voice_transcript = ""
-                st.session_state.voice_result = None
-                
-                # Switch page to Chat Assistant
-                st.session_state.navigation_page = "💬 Chat Assistant"
-                st.rerun()
-        else:
-            if not transcribe_btn:
-                st.info("Record or upload an audio query and press 'Transcribe & Ask Assistant'.")
 
 elif page == "✅ Eligibility Checker":
     st.title("✅ Placement Eligibility Checker")

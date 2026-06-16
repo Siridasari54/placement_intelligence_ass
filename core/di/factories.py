@@ -29,13 +29,6 @@ from safety.conflict_detector import ConflictDetector
 from safety.fallback_guard import FallbackGuard
 import logging
 
-# Multi-hop retriever (optional)
-MultiHopRetriever = None
-try:
-    from retrieval.multi_hop_retriever import MultiHopRetriever
-except ImportError:
-    pass
-
 logger = logging.getLogger(__name__)
 
 
@@ -296,9 +289,7 @@ def register_services(container: ServiceContainer) -> None:
     # Register engineering services (factories with dependencies)
     container.register_factory(QueryPlanner, factory.create_query_planner)
     container.register_factory(DynamicRetriever, factory.create_dynamic_retriever)
-    # Register MultiHopRetriever only if available
-    if MultiHopRetriever is not None:
-        container.register_factory(MultiHopRetriever, factory.create_multi_hop_retriever)
+    # MultiHopRetriever registration skipped - not always available
     container.register_factory(RAGPipeline, factory.create_rag_pipeline)
     
     logger.info("All services registered with container following SOLID principles")

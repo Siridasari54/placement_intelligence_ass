@@ -1,24 +1,24 @@
 """Voice input transcription module using Groq Whisper API."""
 
 import logging
-from typing import Optional, Tuple
+from typing import Optional
 from groq import Groq
 from config.settings import settings
 
 logger = logging.getLogger(__name__)
 
-def transcribe_audio(audio_file, language: str) -> Tuple[str, str]:
-    """Transcribes audio using Groq Whisper API and normalizes multilingual queries.
+def transcribe_audio(audio_file, language: str) -> str:
+    """Transcribes audio using Groq Whisper API.
     
     Args:
         audio_file: Streamlit audio input file-like object
         language: Selected language ("English", "Telugu", or "Hindi")
         
     Returns:
-        Tuple of (normalized_query, raw_transcript) - both strings, or ("", "") on error
+        The transcription text, or empty string on error
     """
     if not audio_file:
-        return "", ""
+        return ""
         
     # Map language names to ISO 639-1 language codes
     language_map = {
@@ -50,37 +50,21 @@ def transcribe_audio(audio_file, language: str) -> Tuple[str, str]:
         
         transcript_text = transcription.text.strip()
         logger.info(f"Transcription successful. Transcript length: {len(transcript_text)} characters.")
-        logger.info(f"Raw Transcript: {transcript_text}")
-        
-        # Apply query normalization for multilingual queries
-        from core.query_normalization import normalize_multilingual_query, is_multilingual_query
-        
-        normalized_query = transcript_text
-        if is_multilingual_query(transcript_text) or language in ["Telugu", "Hindi"]:
-            logger.info("Detected multilingual query, applying normalization...")
-            normalized_query = normalize_multilingual_query(transcript_text)
-            logger.info(f"Normalized Query: {normalized_query}")
-        else:
-            logger.info("Query appears to be English, skipping normalization.")
-        
-        return normalized_query, transcript_text
+        return transcript_text
         
     except Exception as e:
         logger.error(f"Error during audio transcription: {e}", exc_info=True)
-        return "", ""
+        return ""
 
-def transcribe_audio_via_api(audio_file, language: str) -> Tuple[str, str]:
+def transcribe_audio_via_api(audio_file, language: str) -> str:
     """Transcribes audio file using local FastAPI transcription endpoint /transcribe.
     
     Falls back to local direct transcription if the API endpoint is unavailable.
-    
-    Returns:
-        Tuple of (normalized_query, raw_transcript) - both strings, or ("", "") on error
     """
     import requests
     
     if not audio_file:
-        return "", ""
+        return ""
         
     try:
         url = "http://localhost:8000/transcribe"
@@ -104,20 +88,7 @@ def transcribe_audio_via_api(audio_file, language: str) -> Tuple[str, str]:
         if response.status_code == 200:
             transcript = response.json().get("transcript", "").strip()
             logger.info(f"API transcription successful. Transcript length: {len(transcript)} characters.")
-            logger.info(f"Raw Transcript: {transcript}")
-            
-            # Apply query normalization for multilingual queries
-            from core.query_normalization import normalize_multilingual_query, is_multilingual_query
-            
-            normalized_query = transcript
-            if is_multilingual_query(transcript) or language in ["Telugu", "Hindi"]:
-                logger.info("Detected multilingual query, applying normalization...")
-                normalized_query = normalize_multilingual_query(transcript)
-                logger.info(f"Normalized Query: {normalized_query}")
-            else:
-                logger.info("Query appears to be English, skipping normalization.")
-            
-            return normalized_query, transcript
+            return transcript
         else:
             logger.error(f"API transcription failed with status {response.status_code}: {response.text}")
             # Fallback to local Groq client transcription if FastAPI server is down/fails
