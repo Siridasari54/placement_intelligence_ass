@@ -10,6 +10,7 @@ class MySQLPlacementService:
     """Service class containing reusable utilities to query, update, and manage the student placement tables in MySQL."""
     
     def __init__(self):
+        
         self.manager = MySQLConnectionManager()
 
     def create_database_and_schema(self) -> bool:

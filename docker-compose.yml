@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+  # Streamlit UI
+  placement-ui:
+    build: .
+    container_name: placement-intelligence-ui
+    ports:
+      - "8501:8501"
+    environment:
+      - GROQ_API_KEY=${GROQ_API_KEY}
+      - TAVILY_API_KEY=${TAVILY_API_KEY}
+      - MYSQL_HOST=mysql
+      - MYSQL_PORT=3306
+      - MYSQL_USER=placement_user
+      - MYSQL_PASSWORD=placement_password
+      - MYSQL_DATABASE=placement_db
+    volumes:
+      - ./data:/app/data
+      - ./vector_db:/app/vector_db
+    depends_on:
+      - mysql
+    restart: unless-stopped
+    networks:
+      - placement-network
+
+  # FastAPI Audio Transcription Service
+  placement-api:
+    build: .
+    container_name: placement-intelligence-api
+    ports:
+      - "8000:8000"
+    environment:
+      - GROQ_API_KEY=${GROQ_API_KEY}
+    command: uvicorn api.main:app --host 0.0.0.0 --port 8000
+    restart: unless-stopped
+    networks:
+      - placement-network
+
+  # MySQL Database
+  mysql:
+    image: mysql:8.0
+    container_name: placement-mysql
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=root_password
+      - MYSQL_DATABASE=placement_db
+      - MYSQL_USER=placement_user
+      - MYSQL_PASSWORD=placement_password
+    volumes:
+      - mysql_data:/var/lib/mysql
+    restart: unless-stopped
+    networks:
+      - placement-network
+
+volumes:
+  mysql_data:
+
+networks:
+  placement-network:
+    driver: bridge

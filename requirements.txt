@@ -54,3 +54,9 @@ python-json-logger>=2.0.7
 # FIX #7: pydantic-settings was missing; required if using the pydantic
 # BaseSettings pattern anywhere in the project
 pydantic-settings>=2.0.0
+
+# ── Web Search ────────────────────────────────────────────────────────────────
+tavily-python>=0.3.0
+
+# ── Database ────────────────────────────────────────────────────────────────
+mysql-connector-python>=8.0.0

@@ -136,6 +136,119 @@
         "confidence": 1.0,
         "sources": [],
         "reliability": {}
+      },
+      {
+        "role": "user",
+        "content": "Who is the latest in the field?"
+      },
+      {
+        "role": "assistant",
+        "content": "The latest in the field of track and field is Tharp, who achieved a 12.75 in a recent event, marking the first world record at the NCAA in 50 years.\n\n---\n**Sources:**\n1. [New The Field EP/Album release after 8 years of Silence ... - Reddit](https://www.reddit.com/r/electronicmusic/comments/1slkxpe/new_the_field_epalbum_release_after_8_years_of)\n2. [Track & Field News - The Bible of the Sport Since 1948](https://trackandfieldnews.com)\n3. [Add Field (Data Management Tools) | ArcGIS Pro documentation - Esri](https://doc.esri.com/en/arcgis-pro/latest/tool-reference/data-management/add-field.html)\n",
+        "confidence": 1.0,
+        "sources": [],
+        "reliability": {}
+      },
+      {
+        "role": "user",
+        "content": "Vipro, S\u00fd\u00fdvo, Evaru"
+      },
+      {
+        "role": "assistant",
+        "content": "Based on the placement data, I have information about multiple companies including TCS, Infosys, Wipro, Google, Amazon, Microsoft, and others. Please specify which company you're interested in, or ask about the highest/lowest packages.",
+        "confidence": 0.9,
+        "sources": [],
+        "reliability": {}
+      },
+      {
+        "role": "user",
+        "content": "Who is the CEO of Wipro?",
+        "raw_transcript": "We broke a CEO, Kaun Hepp."
+      },
+      {
+        "role": "assistant",
+        "content": "Srini Pallia is the Chief Executive Officer and Managing Director of Wipro Limited. He has been with Wipro for over three decades and has held various leadership roles, including President of Wipro's Consumer Business Unit and Global Head of Business Application Services.\n\n---\n**Sources:**\n1. [Wipro Appoints Srini Pallia as CEO & Managing Director](https://www.wipro.com/newsroom/press-releases/2024/wipro-appoints-srini-pallia-as-ceo-and-managing-director)\n2. [Srini Pallia Leads Wipro Limited as CEO & MD](https://www.wipro.com/leadership/srini-pallia)\n3. [Executive Leadership Team at Wipro Driving Business Direction](https://www.wipro.com/leadership/executive-leadership-team)\n",
+        "confidence": 1.0,
+        "sources": [],
+        "reliability": {}
+      },
+      {
+        "role": "user",
+        "content": "Who is the CEO of Wipro?",
+        "raw_transcript": "Ng\u01b0\u1eddi \u0c16\u0c0e\u0c1a\u0c3e \u0c2e\u0c23\u0c02 \u0c09\u0c12\u0c3e\u0c17\u0c3e\u0c2e\u0c35\u0c3e \u0c2f\u0c39."
+      },
+      {
+        "role": "assistant",
+        "content": "Srini Pallia is the Chief Executive Officer and Managing Director of Wipro Limited. He has been with Wipro for over three decades and has held various leadership roles, including President of Wipro's Consumer Business Unit and Global Head of Business Application Services.\n\n---\n**Sources:**\n1. [Wipro Appoints Srini Pallia as CEO & Managing Director](https://www.wipro.com/newsroom/press-releases/2024/wipro-appoints-srini-pallia-as-ceo-and-managing-director)\n2. [Srini Pallia Leads Wipro Limited as CEO & MD](https://www.wipro.com/leadership/srini-pallia)\n3. [Executive Leadership Team at Wipro Driving Business Direction](https://www.wipro.com/leadership/executive-leadership-team)\n",
+        "confidence": 1.0,
+        "sources": [],
+        "reliability": {}
+      },
+      {
+        "role": "user",
+        "content": "Who is the CEO of Varity College?",
+        "raw_transcript": "\u0c35\u0c30\u0c3f\u0c1f\u0c4d \u0c15\u0c4b\u0c32\u0c3f \u0c0f \u0c1c\u0c02\u0c24\u0c3e"
+      },
+      {
+        "role": "assistant",
+        "content": "Adam Blumenfeld is the CEO of Varsity Brands.\n\n---\n**Sources:**\n1. [Varsity College (South Africa) - Wikipedia](https://en.wikipedia.org/wiki/Varsity_College_(South_Africa))\n2. [Varsity Brands Unveils Expanded Varsity University: A Unified Hub ...](https://www.prnewswire.com/news-releases/varsity-brands-unveils-expanded-varsity-university-a-unified-hub-for-comprehensive-education-and-training-302215865.html)\n3. [Message from our CEO](https://www.varsitybrands.com/the-varsity-brands-story/ceo-message)\n",
+        "confidence": 1.0,
+        "sources": [],
+        "reliability": {}
+      },
+      {
+        "role": "user",
+        "content": "what is todays date"
+      },
+      {
+        "role": "assistant",
+        "content": "Based on the placement data, I have information about multiple companies including TCS, Infosys, Wipro, Google, Amazon, Microsoft, and others. Please specify which company you're interested in, or ask about the highest/lowest packages.",
+        "confidence": 0.9,
+        "sources": [],
+        "reliability": {}
+      },
+      {
+        "role": "user",
+        "content": "what is the current population of india"
+      },
+      {
+        "role": "assistant",
+        "content": "Based on the placement data, I have information about multiple companies including TCS, Infosys, Wipro, Google, Amazon, Microsoft, and others. Please specify which company you're interested in, or ask about the highest/lowest packages.",
+        "confidence": 0.9,
+        "sources": [],
+        "reliability": {}
+      },
+      {
+        "role": "user",
+        "content": "what is the current population of india"
+      },
+      {
+        "role": "assistant",
+        "content": "Error performing web search: 'QueryHandler' object has no attribute 'web_search_tool'",
+        "confidence": 0.0,
+        "sources": [],
+        "reliability": {}
+      },
+      {
+        "role": "user",
+        "content": "who win the latest ipl"
+      },
+      {
+        "role": "assistant",
+        "content": "The Royal Challengers Bengaluru won the latest IPL season (2026) after defeating the Gujarat Titans by five wickets in the final.\n\n---\n**Sources:**\n1. [IPL Winners (2008\u20132026) \u2014 List Of Champions From All Seasons](https://www.iplwinners.net)\n2. [IPL Winners List (2008 to 2026), All Season Winners PDF with ...](https://testbook.com/news/ipl-winners-list-all-season-notes-pdf)\n3. [Indian Premier League - Wikipedia](https://en.wikipedia.org/wiki/Indian_Premier_League)\n",
+        "confidence": 0.8,
+        "sources": [],
+        "reliability": {}
+      },
+      {
+        "role": "user",
+        "content": "what is the current population of india"
+      },
+      {
+        "role": "assistant",
+        "content": "The current population of India is approximately 1.42 billion, as stated in Source [3]. However, conflicting details were found in other sources, with Source [1] estimating the population to be around 1.475 billion as of 2026, and Source [2] stating the population for 2025 was 1.454 billion.\n\n---\n**Sources:**\n1. [India Population (2026) - Worldometer](https://www.worldometers.info/world-population/india-population)\n2. [India Population (1950-2025) - Macrotrends](https://www.macrotrends.net/global-metrics/countries/ind/india/population)\n3. [India's current population is 1.42 billion, and its trajectory over the ...](https://www.facebook.com/Mobiusfoundation/videos/indias-current-population-is-142-billion-and-its-trajectory-over-the-next-30-yea/357168207489099)\n",
+        "confidence": 0.8,
+        "sources": [],
+        "reliability": {}
       }
     ]
   }

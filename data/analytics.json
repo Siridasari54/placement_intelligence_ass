@@ -53,5 +53,69 @@
       "tool_execution": true,
       "latency_ms": 4445.641279220581
     }
+  },
+  {
+    "query": "Who is the latest in the field?",
+    "timestamp": "2026-06-14T12:08:49.626521",
+    "latency_ms": 0.0,
+    "documents_retrieved": 0,
+    "documents_reranked": 0,
+    "confidence_score": 1.0,
+    "reranking_scores": [],
+    "source_distribution": {},
+    "chunk_utilization": 0.0,
+    "token_usage": 0,
+    "metadata": {
+      "tool_execution": true,
+      "latency_ms": 4113.840341567993
+    }
+  },
+  {
+    "query": "Who is the CEO of Wipro?",
+    "timestamp": "2026-06-14T12:41:23.042543",
+    "latency_ms": 0.0,
+    "documents_retrieved": 0,
+    "documents_reranked": 0,
+    "confidence_score": 1.0,
+    "reranking_scores": [],
+    "source_distribution": {},
+    "chunk_utilization": 0.0,
+    "token_usage": 0,
+    "metadata": {
+      "tool_execution": true,
+      "latency_ms": 3657.8872203826904
+    }
+  },
+  {
+    "query": "Who is the CEO of Wipro?",
+    "timestamp": "2026-06-14T12:42:52.927142",
+    "latency_ms": 0.0,
+    "documents_retrieved": 0,
+    "documents_reranked": 0,
+    "confidence_score": 1.0,
+    "reranking_scores": [],
+    "source_distribution": {},
+    "chunk_utilization": 0.0,
+    "token_usage": 0,
+    "metadata": {
+      "tool_execution": true,
+      "latency_ms": 2255.1629543304443
+    }
+  },
+  {
+    "query": "Who is the CEO of Varity College?",
+    "timestamp": "2026-06-14T12:43:33.671316",
+    "latency_ms": 0.0,
+    "documents_retrieved": 0,
+    "documents_reranked": 0,
+    "confidence_score": 1.0,
+    "reranking_scores": [],
+    "source_distribution": {},
+    "chunk_utilization": 0.0,
+    "token_usage": 0,
+    "metadata": {
+      "tool_execution": true,
+      "latency_ms": 2964.0395641326904
+    }
   }
 ]

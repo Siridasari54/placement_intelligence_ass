@@ -1,1 +1,9 @@
 .env
+__pycache__/
+*.pyc
+
+data/chat_history.json
+data/analytics.json
+data/traces/
+
+.venv/
